@@ -60,10 +60,17 @@ Liechtenwalter and Chawla \cite{lic10} have found potential in using Hellinger t
 
 \section{Ensemble learners}
 \section{Evaluating approaches}
-Efficiency and accuracy are two major factors for evaluating performance on data stream.
-AUROC for classifier
-Inductive learner’s goal is to minimize classification error rate, therefore, it completely ignores the small number of positive examples and predicts every example as negative. This is definitely undesirable. 
+Both UCI datasets and synthetic datasets are often chosen to evaluate classifiers' performance. In order to form a skewed distribution problem and simulate data stream, a minority class and a majority class have to be chosen from a dataset to form the skewed distribution between two classes, the data then will need to be partitioned into some chunks with skewed distribution. 
 
+Efficiency and accuracy are two major factors for evaluating learning algorithms' performance on data stream. In terms of efficiency, it often refers to time overhead, sampling techniques perform not as efficient as other techniques. In terms of accuracy, there are two measures can be used: (1) probability estimation accuracy (2) classification accuracy. In "A General Framework for Mining Concept-Drifting Data Streams with Skewed Distributions", Gao suggested that using Mean Squared Error to measure the quality of probability estimation, for rare class, low Mean Squared Error is desired. Common measurement for classification accuracy is classification error rate, but this measurement is undesirable for imbalanced data streams because the rare minority class doesn't have an significant impact on classification error rate. Instead, three other measurement are typically used: Precision, Recall and False Alarm Rate. Gao suggested ROC curve can show the trade-off between Precision and False Alarm Rate. A good ROC has big Area Under ROC Curve (AUC), and the closer to the left-top corner the better. Another similar method is recall-precision plot. Gao showed that by employing Sampling and Ensemble techniques (SE), it has significantly improved both probability accuracy (MSE) and ROC measurement. In "A Survey on Concept Drift Adaptation", Gama discussed several other performance evaluation metrics can be used:  Sensitivity and Specificity, Kappa-statistic. Kappa-statistics is useful for imbalanced dataset. All these performance metrics should be taken look at when considering the basic reference point or baseline.
+
+In "A Survey on Concept Drift Adaptation", Gama discussed except above evaluation metrics for learning algorithm, the change detection's accuracy can be evaluated for those who equipped explicit drift detection technique. (1) Probability of true change detection. (2) Probability of false alarms. (3) Delay of detection.
+
+In "A Survey on Concept Drift Adaptation", Gama discussed that traditional cross-validation method is not applicable to data stream because it will not keep the temporal nature. He suggested two procedures instead: (1) Holdout. This is wildly used and most useful method for validation, but it is not always possible, because of the temporal nature of data stream. (2) Interleaved Test-Then-Train or Prequential. This method makes full use of every instance, also has a smooth accuracy plot. (3) Controlled Permutations. This method is useful for sudden drift data stream by randomization.
+
+
+\section{Future Work}
+more that two class (multi-class) problem.
 \section{Conclusion}
 
 \newpage
