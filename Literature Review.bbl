@@ -58,6 +58,57 @@ R.~Sebastião, J.~Gama, P.~Rodrigues, and J.~Bernardes,
   [Online]. Available: \url{http://dx.doi.org/10.1007/978-3-642-12519-5_2}
 \BIBentrySTDinterwordspacing
 
+\bibitem{PHT}
+E.~Page, ``Continuous inspection schemes,'' \emph{Biometrika}, pp. 100--115,
+  1954.
+
+\bibitem{FLORA}
+G.~Widmer and M.~Kubat, ``Learning in the presence of concept drift and hidden
+  contexts,'' \emph{Machine learning}, vol.~23, no.~1, pp. 69--101, 1996.
+
+\bibitem{reservoirsampling}
+P.~Vorburger and A.~Bernstein, ``Entropy-based concept shift detection,'' in
+  \emph{Data Mining, 2006. ICDM'06. Sixth International Conference on}.\hskip
+  1em plus 0.5em minus 0.4em\relax IEEE, 2006, pp. 1113--1118.
+
+\bibitem{SMOTE}
+N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, and W.~P. Kegelmeyer, ``Smote:
+  synthetic minority over-sampling technique,'' \emph{arXiv preprint
+  arXiv:1106.1813}, 2011.
+
+\bibitem{SERA}
+S.~Chen and H.~He, ``Sera: selectively recursive approach towards nonstationary
+  imbalanced stream data mining,'' in \emph{Neural Networks, 2009. IJCNN 2009.
+  International Joint Conference on}.\hskip 1em plus 0.5em minus 0.4em\relax
+  IEEE, 2009, pp. 522--529.
+
+\bibitem{musera}
+S.~Chen, H.~He, K.~Li, and S.~Desai, ``Musera: multiple selectively recursive
+  approach towards imbalanced stream data mining,'' in \emph{Neural Networks
+  (IJCNN), The 2010 International Joint Conference on}.\hskip 1em plus 0.5em
+  minus 0.4em\relax IEEE, 2010, pp. 1--8.
+
+\bibitem{rea}
+S.~Chen and H.~He, ``Towards incremental learning of nonstationary imbalanced
+  data stream: a multiple selectively recursive approach,'' \emph{Evolving
+  Systems}, vol.~2, no.~1, pp. 35--50, 2011.
+
+\bibitem{ncl}
+G.~E. Batista, R.~C. Prati, and M.~C. Monard, ``A study of the behavior of
+  several methods for balancing machine learning training data,'' \emph{ACM
+  Sigkdd Explorations Newsletter}, vol.~6, no.~1, pp. 20--29, 2004.
+
+\bibitem{enn}
+------, ``A study of the behavior of several methods for balancing machine
+  learning training data,'' \emph{ACM Sigkdd Explorations Newsletter}, vol.~6,
+  no.~1, pp. 20--29, 2004.
+
+\bibitem{classifier_ensemble}
+A.~Godase and V.~Attar, ``Classifier ensemble for imbalanced data stream
+  classification,'' in \emph{Proceedings of the CUBE International Information
+  Technology Conference}.\hskip 1em plus 0.5em minus 0.4em\relax ACM, 2012, pp.
+  284--289.
+
 \bibitem{hoe12}
 \BIBentryALTinterwordspacing
 T.~Hoens, R.~Polikar, and N.~Chawla, ``\BIBforeignlanguage{English}{Learning
@@ -127,5 +178,20 @@ D.~Cieslak and N.~Chawla, ``\BIBforeignlanguage{English}{Learning decision
   241--256. [Online]. Available:
   \url{http://dx.doi.org/10.1007/978-3-540-87479-9_34}
 \BIBentrySTDinterwordspacing
+
+\bibitem{gao}
+J.~Gao, W.~Fan, J.~Han, and S.~Y. Philip, ``A general framework for mining
+  concept-drifting data streams with skewed distributions.'' in
+  \emph{SDM}.\hskip 1em plus 0.5em minus 0.4em\relax SIAM, 2007, pp. 3--14.
+
+\bibitem{se}
+------, ``A general framework for mining concept-drifting data streams with
+  skewed distributions.'' in \emph{SDM}.\hskip 1em plus 0.5em minus 0.4em\relax
+  SIAM, 2007, pp. 3--14.
+
+\bibitem{survey_on_concept_drift_adaptation}
+J.~Gama, I.~{\v{Z}}liobait{\.e}, A.~Bifet, M.~Pechenizkiy, and A.~Bouchachia,
+  ``A survey on concept drift adaptation,'' \emph{ACM Computing Surveys
+  (CSUR)}, vol.~46, no.~4, p.~44, 2014.
 
 \end{thebibliography}

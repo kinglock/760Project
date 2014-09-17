@@ -15,45 +15,45 @@ Warning--missing publisher in adwin
 Warning--empty year in adwin
 
 Done.
-You've used 13 entries,
+You've used 26 entries,
             4039 wiz_defined-function locations,
-            916 strings with 10404 characters,
-and the built_in function-call counts, 11502 in all, are:
-= -- 956
-> -- 272
-< -- 99
-+ -- 146
-- -- 46
-* -- 658
-:= -- 1790
-add.period$ -- 30
-call.type$ -- 13
-change.case$ -- 17
-chr.to.int$ -- 225
-cite$ -- 15
-duplicate$ -- 771
-empty$ -- 869
-format.name$ -- 59
-if$ -- 2614
+            987 strings with 12296 characters,
+and the built_in function-call counts, 21886 in all, are:
+= -- 1804
+> -- 509
+< -- 194
++ -- 273
+- -- 84
+* -- 1151
+:= -- 3322
+add.period$ -- 62
+call.type$ -- 26
+change.case$ -- 30
+chr.to.int$ -- 444
+cite$ -- 28
+duplicate$ -- 1517
+empty$ -- 1728
+format.name$ -- 109
+if$ -- 5036
 int.to.chr$ -- 0
-int.to.str$ -- 13
-missing$ -- 133
-newline$ -- 82
-num.names$ -- 17
-pop$ -- 284
+int.to.str$ -- 26
+missing$ -- 257
+newline$ -- 121
+num.names$ -- 30
+pop$ -- 567
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 868
+skip$ -- 1674
 stack$ -- 0
-substring$ -- 541
-swap$ -- 686
-text.length$ -- 24
+substring$ -- 1066
+swap$ -- 1298
+text.length$ -- 46
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 13
+type$ -- 26
 warning$ -- 2
-while$ -- 52
-width$ -- 15
-write$ -- 184
+while$ -- 110
+width$ -- 28
+write$ -- 310
 (There were 2 warnings)
