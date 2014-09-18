@@ -62,6 +62,10 @@ R.~Sebastião, J.~Gama, P.~Rodrigues, and J.~Bernardes,
 E.~Page, ``Continuous inspection schemes,'' \emph{Biometrika}, pp. 100--115,
   1954.
 
+\bibitem{eddm}
+M.~Baena-Garc{\'\i}a, J.~del Campo-{\'A}vila, R.~Fidalgo, A.~Bifet,
+  R.~Gavald{\`a}, and R.~Morales-Bueno, ``Early drift detection method,'' 2006.
+
 \bibitem{FLORA}
 G.~Widmer and M.~Kubat, ``Learning in the presence of concept drift and hidden
   contexts,'' \emph{Machine learning}, vol.~23, no.~1, pp. 69--101, 1996.
