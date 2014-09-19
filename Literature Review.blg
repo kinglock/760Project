@@ -9,10 +9,9 @@ I'm skipping whatever remains of this entry
 -- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--empty journal in bae06
 Warning--missing publisher in adwin
 Warning--empty year in adwin
-Warning--empty journal in eddm
-Warning--empty journal in bae06
 Too many commas in name 2 of "Jeremy Z. Kolter and Marcus A. Maloof {jzk}, title = {Using Additive Expert Ensembles to Cope with Concept Drift}, booktitle = {In Proceedings of the 22nd International Conference on Machine Learning (ICML-2005}, year = {2005}, pages = {449--456}, publisher = {ACM Press}" for entry kolter05
 while executing---line 2419 of file IEEEtran.bst
 Too many commas in name 2 of "Jeremy Z. Kolter and Marcus A. Maloof {jzk}, title = {Using Additive Expert Ensembles to Cope with Concept Drift}, booktitle = {In Proceedings of the 22nd International Conference on Machine Learning (ICML-2005}, year = {2005}, pages = {449--456}, publisher = {ACM Press}" for entry kolter05
