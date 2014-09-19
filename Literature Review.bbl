@@ -263,4 +263,21 @@ J.~Gao, W.~Fan, J.~Han, and S.~Y. Philip, ``A general framework for mining
   concept-drifting data streams with skewed distributions.'' in
   \emph{SDM}.\hskip 1em plus 0.5em minus 0.4em\relax SIAM, 2007, pp. 3--14.
 
+\bibitem{bif09}
+A.~Bifet, G.~Holmes, B.~Pfahringer, R.~Kirkby, and R.~Gavald{\`a}, ``New
+  ensemble methods for evolving data streams,'' in \emph{Proceedings of the
+  15th ACM SIGKDD international conference on Knowledge discovery and data
+  mining}.\hskip 1em plus 0.5em minus 0.4em\relax ACM, 2009, pp. 139--148.
+
+\bibitem{zha12}
+\BIBentryALTinterwordspacing
+C.~Zhang and P.~Soda, ``\BIBforeignlanguage{English}{A double-ensemble approach
+  for classifying skewed data streams},'' in
+  \emph{\BIBforeignlanguage{English}{Advances in Knowledge Discovery and Data
+  Mining}}, ser. Lecture Notes in Computer Science, P.-N. Tan, S.~Chawla,
+  C.~Ho, and J.~Bailey, Eds.\hskip 1em plus 0.5em minus 0.4em\relax Springer
+  Berlin Heidelberg, 2012, vol. 7301, pp. 254--265. [Online]. Available:
+  \url{http://dx.doi.org/10.1007/978-3-642-30217-6_22}
+\BIBentrySTDinterwordspacing
+
 \end{thebibliography}
