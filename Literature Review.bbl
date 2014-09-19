@@ -102,16 +102,58 @@ G.~E. Batista, R.~C. Prati, and M.~C. Monard, ``A study of the behavior of
   several methods for balancing machine learning training data,'' \emph{ACM
   Sigkdd Explorations Newsletter}, vol.~6, no.~1, pp. 20--29, 2004.
 
-\bibitem{enn}
-------, ``A study of the behavior of several methods for balancing machine
-  learning training data,'' \emph{ACM Sigkdd Explorations Newsletter}, vol.~6,
-  no.~1, pp. 20--29, 2004.
-
 \bibitem{classifier_ensemble}
 A.~Godase and V.~Attar, ``Classifier ensemble for imbalanced data stream
   classification,'' in \emph{Proceedings of the CUBE International Information
   Technology Conference}.\hskip 1em plus 0.5em minus 0.4em\relax ACM, 2012, pp.
   284--289.
+
+\bibitem{gonc13}
+\BIBentryALTinterwordspacing
+P.~M.~G. Jr and R.~S.~M. de~Barros, ``Rcd: A recurring concept drift
+  framework,'' \emph{Pattern Recognition Letters}, vol.~34, no.~9, pp. 1018 --
+  1025, 2013. [Online]. Available:
+  \url{http://www.sciencedirect.com/science/article/pii/S0167865513000494}
+\BIBentrySTDinterwordspacing
+
+\bibitem{survey_on_concept_drift_adaptation}
+J.~Gama, I.~{\v{Z}}liobait{\.e}, A.~Bifet, M.~Pechenizkiy, and A.~Bouchachia,
+  ``A survey on concept drift adaptation,'' \emph{ACM Computing Surveys
+  (CSUR)}, vol.~46, no.~4, p.~44, 2014.
+
+\bibitem{gam04}
+J.~Gama, P.~Medas, G.~Castillo, and P.~Rodrigues, ``Learning with drift
+  detection,'' in \emph{In SBIA Brazilian Symposium on Artificial
+  Intelligence}.\hskip 1em plus 0.5em minus 0.4em\relax Springer Verlag, 2004,
+  pp. 286--295.
+
+\bibitem{wan13}
+S.~Wang, L.~Minku, D.~Ghezzi, D.~Caltabiano, P.~Tino, and X.~Yao, ``Concept
+  drift detection for online class imbalance learning,'' in \emph{Neural
+  Networks (IJCNN), The 2013 International Joint Conference on}, Aug 2013, pp.
+  1--10.
+
+\bibitem{gonc14}
+\BIBentryALTinterwordspacing
+P.~M.~G. Jr., S.~G. de~Carvalho~Santos, R.~S. Barros, and D.~C. Vieira, ``A
+  comparative study on concept drift detectors,'' \emph{Expert Systems with
+  Applications}, vol.~41, no.~18, pp. 8144 -- 8156, 2014. [Online]. Available:
+  \url{http://www.sciencedirect.com/science/article/pii/S0957417414004175}
+\BIBentrySTDinterwordspacing
+
+\bibitem{bae06}
+M.~Baena-Garc{\'\i}a, J.~del Campo-{\'A}vila, R.~Fidalgo, A.~Bifet,
+  R.~Gavald{\`a}, and R.~Morales-Bueno, ``Early drift detection method,'' 2006.
+
+\bibitem{entropy}
+P.~Vorburger and A.~Bernstein, ``Entropy-based concept shift detection,'' in
+  \emph{Data Mining, 2006. ICDM '06. Sixth International Conference on}, Dec
+  2006, pp. 1113--1118.
+
+\bibitem{ant12}
+D.~Antwi, H.~Viktor, and N.~Japkowicz, ``The perfsim algorithm for concept
+  drift detection in imbalanced data,'' in \emph{Data Mining Workshops (ICDMW),
+  2012 IEEE 12th International Conference on}, Dec 2012, pp. 619--628.
 
 \bibitem{hoe12}
 \BIBentryALTinterwordspacing
@@ -183,19 +225,42 @@ D.~Cieslak and N.~Chawla, ``\BIBforeignlanguage{English}{Learning decision
   \url{http://dx.doi.org/10.1007/978-3-540-87479-9_34}
 \BIBentrySTDinterwordspacing
 
+\bibitem{SEA}
+\BIBentryALTinterwordspacing
+W.~N. Street and Y.~Kim, ``A streaming ensemble algorithm (sea) for large-scale
+  classification,'' in \emph{Proceedings of the Seventh ACM SIGKDD
+  International Conference on Knowledge Discovery and Data Mining}, ser. KDD
+  '01.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY, USA: ACM, 2001, pp.
+  377--382. [Online]. Available: \url{http://doi.acm.org/10.1145/502512.502568}
+\BIBentrySTDinterwordspacing
+
+\bibitem{kolter05}
+J.~Z. Kolter and b.~. I. y. . . p. . . p. .~A. Marcus A. Maloof~{jzk}, title
+  =~{Using Additive Expert Ensembles to Cope with Concept Drift}.
+
+\bibitem{newEnsemble}
+\BIBentryALTinterwordspacing
+A.~Bifet, G.~Holmes, B.~Pfahringer, R.~Kirkby, and R.~Gavald\`{a}, ``New
+  ensemble methods for evolving data streams,'' in \emph{Proceedings of the
+  15th ACM SIGKDD International Conference on Knowledge Discovery and Data
+  Mining}, ser. KDD '09.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY,
+  USA: ACM, 2009, pp. 139--148. [Online]. Available:
+  \url{http://doi.acm.org/10.1145/1557019.1557041}
+\BIBentrySTDinterwordspacing
+
+\bibitem{oza01}
+N.~C. Oza and S.~Russell, ``Online bagging and boosting,'' in \emph{In
+  Artificial Intelligence and Statistics 2001}.\hskip 1em plus 0.5em minus
+  0.4em\relax Morgan Kaufmann, 2001, pp. 105--112.
+
+\bibitem{scholz05}
+M.~Scholz and R.~Klinkenberg, ``An ensemble classifier for drifting concepts,''
+  in \emph{In Proceedings of the Second International Workshop on Knowledge
+  Discovery in Data Streams}, 2005, pp. 53--64.
+
 \bibitem{gao}
 J.~Gao, W.~Fan, J.~Han, and S.~Y. Philip, ``A general framework for mining
   concept-drifting data streams with skewed distributions.'' in
   \emph{SDM}.\hskip 1em plus 0.5em minus 0.4em\relax SIAM, 2007, pp. 3--14.
-
-\bibitem{se}
-------, ``A general framework for mining concept-drifting data streams with
-  skewed distributions.'' in \emph{SDM}.\hskip 1em plus 0.5em minus 0.4em\relax
-  SIAM, 2007, pp. 3--14.
-
-\bibitem{survey_on_concept_drift_adaptation}
-J.~Gama, I.~{\v{Z}}liobait{\.e}, A.~Bifet, M.~Pechenizkiy, and A.~Bouchachia,
-  ``A survey on concept drift adaptation,'' \emph{ACM Computing Surveys
-  (CSUR)}, vol.~46, no.~4, p.~44, 2014.
 
 \end{thebibliography}
