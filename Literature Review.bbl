@@ -41,7 +41,7 @@ P.~Vorburger and A.~Bernstein, ``Entropy-based concept shift detection,'' in
   1em plus 0.5em minus 0.4em\relax IEEE, 2006, pp. 1113--1118.
 
 \bibitem{SMOTE}
-N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, and W.~P. Kegelmeyer, ``Smote:
+N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, and W.~P. Kegelmeyer, ``{SMOTE}:
   synthetic minority over-sampling technique,'' \emph{arXiv preprint
   arXiv:1106.1813}, 2011.
 
@@ -75,7 +75,7 @@ A.~Godase and V.~Attar, ``Classifier ensemble for imbalanced data stream
 
 \bibitem{gonc13}
 \BIBentryALTinterwordspacing
-P.~M.~G. Jr and R.~S.~M. de~Barros, ``Rcd: A recurring concept drift
+P.~M.~G. Jr and R.~S.~M. de~Barros, ``{RCD}: A recurring concept drift
   framework,'' \emph{Pattern Recognition Letters}, vol.~34, no.~9, pp. 1018 --
   1025, 2013. [Online]. Available:
   \url{http://www.sciencedirect.com/science/article/pii/S0167865513000494}
@@ -131,7 +131,7 @@ P.~Vorburger and A.~Bernstein, ``Entropy-based concept shift detection,'' in
   2006, pp. 1113--1118.
 
 \bibitem{ant12}
-D.~Antwi, H.~Viktor, and N.~Japkowicz, ``The perfsim algorithm for concept
+D.~Antwi, H.~Viktor, and N.~Japkowicz, ``The {P}erf{S}im algorithm for concept
   drift detection in imbalanced data,'' in \emph{Data Mining Workshops (ICDMW),
   2012 IEEE 12th International Conference on}, Dec 2012, pp. 619--628.
 
@@ -207,16 +207,18 @@ D.~Cieslak and N.~Chawla, ``\BIBforeignlanguage{English}{Learning decision
 
 \bibitem{SEA}
 \BIBentryALTinterwordspacing
-W.~N. Street and Y.~Kim, ``A streaming ensemble algorithm (sea) for large-scale
-  classification,'' in \emph{Proceedings of the Seventh ACM SIGKDD
+W.~N. Street and Y.~Kim, ``A streaming ensemble algorithm ({SEA}) for
+  large-scale classification,'' in \emph{Proceedings of the Seventh ACM SIGKDD
   International Conference on Knowledge Discovery and Data Mining}, ser. KDD
   '01.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY, USA: ACM, 2001, pp.
   377--382. [Online]. Available: \url{http://doi.acm.org/10.1145/502512.502568}
 \BIBentrySTDinterwordspacing
 
 \bibitem{kolter05}
-J.~Z. Kolter and b.~. I. y. . . p. . . p. .~A. Marcus A. Maloof~{jzk}, title
-  =~{Using Additive Expert Ensembles to Cope with Concept Drift}.
+J.~Z. Kolter and M.~A. Maloof, ``Using additive expert ensembles to cope with
+  concept drift,'' in \emph{In Proceedings of the 22nd International Conference
+  on Machine Learning (ICML-2005)}.\hskip 1em plus 0.5em minus 0.4em\relax ACM
+  Press, 2005, pp. 449--456.
 
 \bibitem{newEnsemble}
 \BIBentryALTinterwordspacing

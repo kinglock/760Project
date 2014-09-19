@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.5)  19 SEP 2014 19:53
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.5)  19 SEP 2014 20:15
 entering extended mode
 **Literature*Review.tex
 ("E:\COMPSCI 760\Group project\git\760Project\Literature Review.tex"
@@ -364,61 +364,41 @@ Missing character: There is no Õ in font ptmr7t!
 Missing character: There is no Õ in font ptmr7t!
 Missing character: There is no Õ in font ptmr7t!
 Missing character: There is no Õ in font ptmr7t!
-Missing character: There is no Õ in font ptmr7t!
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--37
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--37
+Underfull \hbox (badness 10000) in paragraph at lines 27--38
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--37
+Underfull \hbox (badness 10000) in paragraph at lines 27--38
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--37
+Underfull \hbox (badness 10000) in paragraph at lines 27--38
 
  []
 
 
-Underfull \hbox (badness 3009) in paragraph at lines 27--37
-\OT1/ptm/m/n/9 drift in im-bal-anced data streams from dif-fer-ent an-gles such
+Underfull \hbox (badness 10000) in paragraph at lines 27--38
 
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 27--37
-\OT1/ptm/m/n/9 as sam-pling tech-niques, en-sem-ble tech-niques, change de-tec-
-tion
+Underfull \hbox (badness 1558) in paragraph at lines 27--38
+\OT1/ptm/m/n/9 This lit-er-a-ture sur-vey gives an overview on han-dling con-ce
+pt
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--37
-\OT1/ptm/m/n/9 al-go-rithms and adap-tive learn-ing al-go-rithms,and eval-u-a-t
-ion
+Underfull \hbox (badness 1354) in paragraph at lines 27--38
+\OT1/ptm/m/n/9 as: sam-pling tech-niques; con-cept drift de-tec-tion; base lear
+n-ing
  []
 
 
-Underfull \hbox (badness 2173) in paragraph at lines 27--37
-\OT1/ptm/m/n/9 method-olo-gies of adap-tive learn-ing al-go-rithms. The sur-vey
- is
- []
+Underfull \hbox (badness 10000) in paragraph at lines 27--38
 
-
-Underfull \hbox (badness 4108) in paragraph at lines 27--37
-\OT1/ptm/m/n/9 prob-lem. Sec-tion 3 presents sev-eral com-mon drift de-tec-tion
-
- []
-
-
-Underfull \hbox (badness 4479) in paragraph at lines 27--37
-\OT1/ptm/m/n/9 al-go-rithms. Sec-tion 4 dis-cusses sev-eral pop-u-lar clas-si-f
-i-ca-tion
  []
 
 LaTeX Font Info:    Try loading font information for U+msa on input line 42.
@@ -604,7 +584,10 @@ Underfull \hbox (badness 2809) in paragraph at lines 87--94
 
  []
 
-[3]
+
+Underfull \vbox (badness 1533) has occurred while \output is active []
+
+ [3]
 Underfull \hbox (badness 10000) in paragraph at lines 97--112
 
  []
@@ -774,7 +757,7 @@ s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files (x
 /fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
 e1/urw/times/utmr8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on "Literature Review.pdf" (6 pages, 153418 bytes).
+Output written on "Literature Review.pdf" (6 pages, 153480 bytes).
 PDF statistics:
  228 PDF objects out of 1000 (max. 8388607)
  53 named destinations out of 1000 (max. 500000)
