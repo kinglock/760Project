@@ -1,5 +1,5 @@
 
-\documentclass[10pt]{article}
+\documentclass[9pt, technote]{IEEEtran}
 
 \usepackage{alltt} 
 \usepackage{graphicx}
@@ -69,6 +69,7 @@ Decision trees have trouble accurately classifying rare classes. Consider a bina
 Liechtenwalter and Chawla \cite{lic10} have found potential in using Hellinger trees in environments with concept drift. By weighting the Hellinger distance with Information Gain to measure distance between datasets, a learner can decide whether model learnt on previous data is valid on current data. Pazzolo et al \cite{paz14} showed, using the HDDT proposed by Cieslak and Chawla \cite{cie08} and C4.5 tree, that trees with this weighting generally outperformed trees without the weighting in class-imbalanced environments with drift. These papers do not address the multi-class problem, which would be a natural extension of this research.
 
 \section{Ensemble learners}
+
 \section{Evaluating approaches}
 Both UCI datasets and synthetic datasets are often chosen to evaluate classifiers' performance. In order to form a skewed distribution problem and simulate data stream, a minority class and a majority class have to be chosen from a dataset to form the skewed distribution between two classes, the data then will need to be partitioned into some chunks with skewed distribution. 
 \\\\
@@ -78,10 +79,42 @@ In \cite{survey_on_concept_drift_adaptation}, Gama discussed except above evalua
 \\\\
 In  \cite{survey_on_concept_drift_adaptation}, Gama discussed that traditional cross-validation method is not applicable to data stream because it will not keep the temporal nature. He suggested two procedures instead: (1) Holdout. This is wildly used and most useful method for validation, but it is not always possible, because of the temporal nature of data stream. (2) Interleaved Test-Then-Train or Prequential. This method makes full use of every instance, also has a smooth accuracy plot. (3) Controlled Permutations. This method is useful for sudden drift data stream by randomization.
 
+\section{Discussion}
+
+In this paper thus far, we have outlined four important factors of streaming data analysis that are made more important by the presence of class imbalance and concept drift: sampling; concept drift detection; base learners; and ensemble approach. We have also outlined various ways to evaluate the analysis performance. But how can we decide on a combination that best suits our purpose? Here, we examine research that has tested various approaches of on different measures, and summarise some of the lessons we can learn about designing our own analyses.
+
+Bifet et al. (2009) examines analysis of very large data streams (1-10 mil. Items) with drift present. The authors propose two new methods: bagging Adaptive Size Hoeffding Trees (where multiple Hoeffding Trees of different sizes are bagged, with increased diversity and increased performance resulting); and bagged Hoeffding Trees, with ADWIN as a change detector (removing the worst classifier whenever change is detected). First, they use Kappa statistics to show that the ASHT produces more diverse trees than a standard approach. They then compare their proposed two approaches against decision stumps, Naïve Bayes classifiers, and Hoeffding trees with DDM, EDDM, Hoeffding Option Trees (with and without boosting), bagged HT trees and many others. They measure performance by time, memory and classification accuracy across datasets with various degrees of drift.
+
+Their results demonstrate that there is no global best option. Bagged approaches provide better accuracy than other approaches at the cost of memory and time. However, using 5 trees rather than 10 almost doubles the speed of the approach without sacrificing much accuracy.  The simplest approaches (e.g. Naïve Bayes) generally run in under a tenth of the time of the fastest, sacrificing anywhere between 5\% and 30\% classification accuracy compared to the more complex approaches, dependent on the drift in the underlying dataset. The memory requirements of some approaches such as simple Hoeffding trees stay fairly constant over data items processed, while others such as bagged ASHT continually climb. The paper successfully demonstrates how its two proposed approaches perform very accurate analyses.
+
+This paper shows that before we decide on our approach, we need a clear understanding of the size of the stream, some understanding on whether underlying drift is present, and what constraints (time, memory and required accuracy) we have on our approach. This requires that we research and understand our constraints and data before implementing our approach, as a lot of time can be wasted through implementing insufficient approaches. Without regular (and costly) validation of stream classifiers, we will not fully understand how well our approach is working ? using ensemble methods and including drift-detection helps to provide an approach that is robust in a changing environment.
+
+Dal Pazzolo et al. (2014)  examine imbalanced datasets with varying levels of concept drift, and test various combinations of base learner (Hellinger Distance Decision Tree (HDDT) vs. C4.5), sampling method (baseline, undersampling, and two variations of oversampling the rare class), and ensemble approach (single model vs. an ensemble approach using the weighting of Hellinger Distance and Information Gain described previously). They evaluated their experiments in terms of time and area under the ROC curve.
+
+Their results showed that undersampling and baseline samples performed faster than their oversampling methods. The HDDT trees led to slightly slower performance than the C4.5 trees. The fastest method (undersampling, C4.5 tree) was over twenty times faster than the slowest method (HDIG ensemble, with a HDDT tree and oversampling). AUROC measures were consistently improved by using their ensemble approach and the HDDT tree. The HDDT specifically made a large difference in the dataset with the highest imbalance ratio. However, this improvement was not significant when an ensemble approach was used. Overall, the baseline ensemble HDDT approach and the undersampled ensemble HDDT approach produced significantly better AUROC measures than the other approaches. Most interestingly, there was an interaction between learner type, sampling method, and ensemble approach, where a change in one factor would affect the efficacy of another. This set of results demonstrates two important points. First, without proper understanding of the methods we are using, we can lose time and accuracy through taking a complex approach, such as oversampling with ensemble HDDTs in this experiment. Second, when working with class imbalance, the degree and nature of imbalance will decide the relative improvement a particular approach provides.
+
+Zhang and Soda (2012) examine binary-class classification in skewed data streams. They propose an approach of finding a balance between maximising overall classification accuracy with the balance of accuracy across classes, rather than maximising either. Their approach uses two different ensembles of classifiers (each a combination of Naïve Bayes, logistic regression and C4.5), each with a different method of analysis. The data is divided into batches, or fixed windows. The method used is decided by whether the data is detected to be skewed or not (a measure titled ?reliability?). Each method uses different sampling methods and ensemble voting approaches depending on whether it is for skewed or non-skewed data.
+
+This decision-making process causes the approach to take longer than either individual ensemble, and achieves a lower total accuracy than one measure and class-balanced accuracy than the other. However, it is a strong demonstration of how a combination of methods can result in a system that will intelligently change behaviour based on the data profile, and select a balanced analysis approach. This approach will be robust, even if the user does not have deep understanding of the data nor expert knowledge of the algorithms involved. This shows a potential, new approach to analysing skewed, imbalanced data-streams that could be robust in a variety of situations. This approach doesn?t explicitly address concept drift; once adapted to do so, though, it could provide an extremely robust approach to analysis of unseen data.
+
 
 \section{Future Work}
-Most of the imbalance-handling techniques mentioned in this paper focus on two-class problem.
+
+Analysis of imbalanced data streams with underlying concept drift is an exciting new area, with much to explore and develop. Here we discuss several areas that have come to our attention that would benefit from additional research.
+
+Many approaches to imbalanced classes are limited to binary classes, and not multi-class problems. For example, Zhang and Soda?s two-ensemble approach uses evaluation measures and learners that cannot function beyond two classes. In the streaming environment, accommodating multiple-classes is expensive and a lot of work will be needed to adapt these approaches.
+
+Performance comparisons between new approaches are few and far between, especially across dimensions explored in this paper. Research that compares performance of existing approaches in total accuracy, class-balanced accuracy, time and memory across different ensemble methods, sampling, learners and concept-drift detection will be valuable.
+
+Finally, selecting an approach right now requires a deep understanding of the data stream. Adaptive approaches that can select powerful approaches to analysing unseen data will be invaluable. These must be acceptably cheap to perform in the worst-case and adaptive enough to adjust to changing underlying data streams.
+
 \section{Conclusion}
+
+In this paper, we have examined analysis of data streams, with a focus on those with class-imbalance and underlying concept drift. We have discussed approaches to sampling, concept drift detection, base learners and ensemble approaches, and how they contribute to analyses. With each of these aspects, we have discussed important and influential techniques that are making an impact within the area. 
+
+We explored measures that can be used to evaluate our methods, and the specific considerations that need to be made with skewed data. Through discussing examples of these approaches put into practice, we have demonstrated the complexity of selecting an approach, and shown how we must understand the constraints and goals of our analysis before deciding on an approach.
+
+Finally, we have proposed several areas of future work that have the potential to make a real contribution to this field.
 
 \newpage
 \bibliographystyle{IEEEtran}
