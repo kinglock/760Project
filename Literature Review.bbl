@@ -205,6 +205,16 @@ D.~Cieslak and N.~Chawla, ``\BIBforeignlanguage{English}{Learning decision
   \url{http://dx.doi.org/10.1007/978-3-540-87479-9_34}
 \BIBentrySTDinterwordspacing
 
+\bibitem{newEnsemble}
+\BIBentryALTinterwordspacing
+A.~Bifet, G.~Holmes, B.~Pfahringer, R.~Kirkby, and R.~Gavald\`{a}, ``New
+  ensemble methods for evolving data streams,'' in \emph{Proceedings of the
+  15th ACM SIGKDD International Conference on Knowledge Discovery and Data
+  Mining}, ser. KDD '09.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY,
+  USA: ACM, 2009, pp. 139--148. [Online]. Available:
+  \url{http://doi.acm.org/10.1145/1557019.1557041}
+\BIBentrySTDinterwordspacing
+
 \bibitem{SEA}
 \BIBentryALTinterwordspacing
 W.~N. Street and Y.~Kim, ``A streaming ensemble algorithm ({SEA}) for
@@ -220,16 +230,6 @@ J.~Z. Kolter and M.~A. Maloof, ``Using additive expert ensembles to cope with
   on Machine Learning (ICML-2005)}.\hskip 1em plus 0.5em minus 0.4em\relax ACM
   Press, 2005, pp. 449--456.
 
-\bibitem{newEnsemble}
-\BIBentryALTinterwordspacing
-A.~Bifet, G.~Holmes, B.~Pfahringer, R.~Kirkby, and R.~Gavald\`{a}, ``New
-  ensemble methods for evolving data streams,'' in \emph{Proceedings of the
-  15th ACM SIGKDD International Conference on Knowledge Discovery and Data
-  Mining}, ser. KDD '09.\hskip 1em plus 0.5em minus 0.4em\relax New York, NY,
-  USA: ACM, 2009, pp. 139--148. [Online]. Available:
-  \url{http://doi.acm.org/10.1145/1557019.1557041}
-\BIBentrySTDinterwordspacing
-
 \bibitem{oza01}
 N.~C. Oza and S.~Russell, ``Online bagging and boosting,'' in \emph{In
   Artificial Intelligence and Statistics 2001}.\hskip 1em plus 0.5em minus
@@ -239,6 +239,11 @@ N.~C. Oza and S.~Russell, ``Online bagging and boosting,'' in \emph{In
 M.~Scholz and R.~Klinkenberg, ``An ensemble classifier for drifting concepts,''
   in \emph{In Proceedings of the Second International Workshop on Knowledge
   Discovery in Data Streams}, 2005, pp. 53--64.
+
+\bibitem{LEARN}
+G.~Ditzler and R.~Polikar, ``An ensemble based incremental learning framework
+  for concept drift and class imbalance,'' in \emph{Neural Networks (IJCNN),
+  The 2010 International Joint Conference on}, July 2010, pp. 1--8.
 
 \bibitem{bif09}
 A.~Bifet, G.~Holmes, B.~Pfahringer, R.~Kirkby, and R.~Gavald{\`a}, ``New
