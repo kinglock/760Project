@@ -21,8 +21,41 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{gonc14}
+\BIBentryALTinterwordspacing
+P.~M.~G. Jr., S.~G. de~Carvalho~Santos, R.~S. Barros, and D.~C. Vieira, ``A
+  comparative study on concept drift detectors,'' \emph{Expert Systems with
+  Applications}, vol.~41, no.~18, pp. 8144 -- 8156, 2014. [Online]. Available:
+  \url{http://www.sciencedirect.com/science/article/pii/S0957417414004175}
+\BIBentrySTDinterwordspacing
+
+\bibitem{SMOTE}
+N.~V. Chawla, K.~W. Bowyer, L.~O. Hall, and W.~P. Kegelmeyer, ``{SMOTE}:
+  synthetic minority over-sampling technique,'' \emph{arXiv preprint
+  arXiv:1106.1813}, 2011.
+
+\bibitem{neuro}
+\BIBentryALTinterwordspacing
+M.~Gao, X.~Hong, S.~Chen, and C.~J. Harris, ``A combined \{SMOTE\} and \{PSO\}
+  based \{RBF\} classifier for two-class imbalanced problems,''
+  \emph{Neurocomputing}, vol.~74, no.~17, pp. 3456 -- 3466, 2011. [Online].
+  Available:
+  \url{http://www.sciencedirect.com/science/article/pii/S0925231211003559}
+\BIBentrySTDinterwordspacing
+
+\bibitem{hulse}
+\BIBentryALTinterwordspacing
+J.~Van~Hulse, T.~M. Khoshgoftaar, and A.~Napolitano, ``Experimental
+  perspectives on learning from imbalanced data,'' in \emph{Proceedings of the
+  24th International Conference on Machine Learning}, ser. ICML '07.\hskip 1em
+  plus 0.5em minus 0.4em\relax New York, NY, USA: ACM, 2007, pp. 935--942.
+  [Online]. Available: \url{http://doi.acm.org/10.1145/1273496.1273614}
+\BIBentrySTDinterwordspacing
+
 \bibitem{mckinsey}
-``Big data: The next frontier for innovation, competition and productivity,''
+{The McKinsey Global Institute}, ``Big data: The next frontier for innovation,
+  competition and productivity,''
+  \url{http://www.mckinsey.com/insights/business\_technology/big\_data\_the\_next\_frontier\_for\_innovation},
   2011, accessed: 2014-09-26.
 
 \bibitem{wan13}

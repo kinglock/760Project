@@ -85,7 +85,7 @@ This proposal aims to explain our group project for Compsci 760. First, we detai
 
 For the purposes of this paper, 'streaming data' refers to large amounts of data, arriving over time. 'Underlying concept drift' is defined as the distribution that generates the data changing over the period of the stream. 'Classification' is a method that uses attributes of a data item to label it with a class systematically. For the purposes of this project, we limit our scope to binary-class problems. 'Drift-detectors' are mechanisms that detect changes in the underlying distribution and adapt the classification approach if changes occur. 'Imbalanced' data is characterized by having one prominent class and one rare class, in the binary-class context.  'Sampling methods' are techniques that re-use or remove underlying data records in some manner so as to improve the results of classification.
 
-Many of the techniques we discuss have been referenced in our submitted paper, 
+Many of the techniques we discuss have been referenced in our submitted literature review, "Classification of Imbalanced Data Streams with Concept Drift: a Literature Review". Where we have referenced other sources of information, we have cited them within this paper.
 
 \section{Motivation}
 
@@ -97,9 +97,68 @@ Finally, we will not always know whether data is class-imbalanced or suffers fro
 
 \section{Research Question}
 
+We propose to evaluate the effects of combining sampling methods (SMOTE and potentially NCL) with drift detectors (ADWIN and PHT) and a single base learner (Hoeffding trees) on imbalanced data streams with concept drift. We would like to investigate how these different hybrid approaches perform on datasets with different characteristics such as data with gradual drifts, abrupt drifts, and varying levels of class imbalance. The performance measures of interest to us include memory usage, runtime, overall accuracy, recall, precision, F-score, and accuracy of minor classes (kappa statistics??). Our hypotheses are:
+
+\begin{itemize}
+\item that applying sampling techniques to drift detectors will greatly improve the performance of classifiers for datasets with high and moderate degrees of class imbalance compared to drift detectors without sampling. 
+\item applying more layers of complexity (i.e. sampling, drift detection) to the base learner will increase the time and memory requirements, but does not always guarantee better performance.
+\item there is no statistically significant difference in accuracy or recall between using different drift detectors.
+\end{itemize} 
+
 \section{Approach}
 
+MOA and  Weka libraries include a lot of ready-to-use algorithms for stream data mining. We may use MOAÕs API or command line to run our experiment programmatically in Java. The code should be performing following steps in order:
+first we will generate some synthetic data streams with imbalanced class distribution using data feeding module below, each type of data stream will be generated 30 times with different seed;
+save stream to arff data set;
+we use sampling module to re-balance the class distribution for those data sets;
+we use classification module to test and train models using the data streams;
+evaluation module will be used to extract useful measurements.
+
+	
+%\subsection{Implementation}						
+\subsection{System architecture}				
+Our system architecture consists of sampling module, data feeding module, drift detection module, learning module and evaluation module. The drift detection module and learning module could be combined if the learning algorithm is capable of drift detection. In one particular module, when there are two or more algorithms that want to compare their performance with each other, we will run them one by one and record their performance metrics. And our final result will contain all the possible algorithm combinations between different modules.
+
+\subsubsection{Sampling module}
+SMOTE(Synthetic Minority Over-Sampling TEchnique) is a popular approach which increases new, non-replicated minority class instances to the training dataset. 
+When we have external arff dataset, we will apply SMOTE sampling on arff dataset to re-balance as part of the experiment procedure, so that after pre-processing the class distribution of training dataset is balanced. We also want to see the performance without sampling approach presented in the system, in which case we wonÕt apply apply any sampling techniques.		
+		
+\subsubsection{Data feeding module}
+Streams will be generated using the following MOA classes:
+\begin{itemize}
+\item NoChangeGenerator
+\item SEAGenerator/AbruptChangeGenerator for abrupt concept drift
+\item GradualChangeGenerator
+\item ConceptDriftStream+ArffFileStream
+\end{itemize}
+Each generator will be used to generate 30 streams with different random seed.  Non-Drifted data stream could be joining concept drift stream to form a concept-drifted stream.
+
+\subsubsection{Classification module}
+
+\begin{itemize}
+\item NoChange Or HoeffdingTree(VFDT)
+\\
+This classifier is chosen because we want to see how the classifier performs when it cannot handle concept drift, and it will be our baseline classifier for reference point. A Hoeffding tree is an incremental, anytime decision tree induction algorithm that is capable of learning from data streams, assuming that the distribution generating examples does not change over time. Hoeffding trees exploit the fact that a small sample can often be enough to choose an optimal splitting attribute. This idea is supported mathematically by the Hoeffding bound, which quantiÞes the number of instances needed to estimate some statistics within a prescribed precision.
+A theoretically appealing feature of Hoeffding Trees not shared by other incremental decision tree learners is that it guarantees the performance. 
+
+\item SingleClassifierDrift(optional) 
+\\
+This is a wrapper of any base learner also capable of handling concept drift datasets any drift detection method could be used along with it, e.g. DDM, EDDM, ADWIN.
+\item Hoeffding Adaptive Tree
+\\
+Hoeffding Window Tree that uses ADWIN as a change detector. Hoeffding Adaptive Tree as a new method that evolving from Hoeffding Window Tree, adaptively learn from data streams that change over time without needing a fixed size of sliding window. The optimal size of the sliding window is a very difficult parameter to guess for users, since it depends on the rate of change of the distribution of the dataset. 
+\end{itemize}
+				
+\subsubsection{Evaluation module}
+We will use an evaluation method implemented in MOA: Interleaved Test-Then-Train or Prequential, each individual example is used to test the model before it is used for training, and from this the accuracy is incrementally updated. This scheme has the advantage that no holdout set is needed for testing, making maximum use of the available data. 
+The following measurements will be used: accuray, time, memory usage, AUC, Kappa-statistic, Precision, Recall, F-Measure. Recall is the True Positive rate. Precision is the Positive Predicted Value. F-measure is a combination of recall and precision. This represents a harmonic mean between recall and precision. In practice, high F-measure value ensures that both recall and precision are reasonably high.
+The area under a ROC (Receiver Operating Characteristic)curve (AUC) provides a single measure of a classifierÕs performance for evaluating which model is better on average.
+
 \section{Anticipated Results}
+
+We expect ADWIN to have better performance in terms of runtime as ADWIN has been previously shown to have the lowest evaluation time for most datasets (with a variety of properties) at a 95\% confidence interval  by Goncalves et al \cite{gonc14}. We also expect that the accuracy of ADWIN would be higher than that of PHT and methods without drift detector, but the difference between ADWIN and PHT would be negligable as Goncalves et al showed that there is no difference between the performance of classifiers at a p-level of 0.05 based on the Nemenyi test \cite{gonc14}. However as their results did not focus on imbalanced datasets, the conclusions can not be generalised to datasets with skewed distributions. 
+\\\\
+The SMOTE sampling technique has been shown to be an effective way to deal with data with imbalanced classes \cite{SMOTE} and creates better decision boundaries by shifting the boundary away from positive instances when combined with support vector machines - SVMs (Akbani et al, 2004 as cited by \cite{neuro}). Other studies such as Hulse et al's paper \cite{hulse} have evaluated the effects of combining different sampling methods with different learners for imbalanced datasets, but did not examine datasets with underlying concept drift. Hulse et al. showed that there is an interaction between the sampling technique and learner, and the effectiveness of a particular sampling technique depends on the type of learner that is used \cite{hulse}. Thus it is probable that the performance of sampling techniques also depends on the type of drift detector that is used in streams with concept drift. 
 
 \section{Significance of the Proposed Research}
 
