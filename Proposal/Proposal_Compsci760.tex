@@ -89,7 +89,7 @@ Many of the techniques we discuss have been referenced in our submitted literatu
 
 \section{Motivation}
 
-The cost of infrastructure required to collect data has dropped dramatically, while they are capable of collecting much more information. Analysis of data streams is more important than ever, as it allows understanding of these huge swathes of data without having to store and process such a large amount of data over a long period. Effective and robust data stream analysis can allow near real-time understanding of a domain, permitting a more effective response to what the data shows. In short, effective data stream analysis provides value that delayed, static dataset analysis rarely can.
+The cost of infrastructure required to collect data has dropped dramatically, while systems are capable of collecting much more information. Data stream analysis is more important than ever, providing understanding of these huge swathes of data without having to store and process such a large amount of data over a long period. Effective and robust data stream analysis can allow near real-time understanding of a domain, permitting a more effective response to what the data shows. In short, effective data stream analysis provides value that delayed, static dataset analysis rarely can.
 
 However, there is a significant downside when analysing streaming data. Without a prior knowledge of the characteristics of our data, we cannot hand-pick an approach that will provide strong analysis of a particular dataset. Classification of imbalanced data is a difficult problem even in a static environment, as it is difficult to develop a meaningful understanding of a class with few examples. As streams run over time, concept drift also becomes an issue: we may be classifying data in a manner that is no longer current and is therefore inaccurate. In our research, we seek to test current solutions to these problems that have been optimized to work in a data stream. As imbalanced streams are just as likely to have concept drift as normal streams, it is important to consider both issues in conjunction. What is more, concept drift in a rare dataset can be much more difficult to detect, so current methods of concept drift detection need to be tested in an environment that may interfere with their effectiveness.
 
@@ -97,80 +97,79 @@ Finally, we will not always know whether data is class-imbalanced or suffers fro
 
 \section{Research Question}
 
-We propose to evaluate the effects of combining sampling methods (SMOTE and potentially NCL) with drift detectors (ADWIN and PHT) and a single base learner (Hoeffding trees) on imbalanced data streams with concept drift. We would like to investigate how these different hybrid approaches perform on datasets with different characteristics such as data with gradual drifts, abrupt drifts, and varying levels of class imbalance. The performance measures of interest to us include memory usage, runtime, overall accuracy, recall, precision, F-score, and accuracy of minor classes (kappa statistics??). Our hypotheses are:
+We propose to evaluate the effects of combining sampling methods (none/SMOTE/potentially NCL) with drift detectors (none/ADWIN/PHT) for a single base learner (Hoeffding trees) on classification of imbalanced data streams with concept drift. We would like to investigate how these different hybrid approaches perform on datasets with different characteristics such as data with gradual drifts, abrupt drifts, and varying levels of class imbalance. The performance measures of interest to us include memory usage, runtime, overall accuracy, recall, precision and F-score. Our hypotheses are:
 
 \begin{itemize}
 \item that applying sampling techniques to drift detectors will greatly improve the performance of classifiers for datasets with high and moderate degrees of class imbalance compared to drift detectors without sampling. 
-\item applying more layers of complexity (i.e. sampling, drift detection) to the base learner will increase the time and memory requirements, but does not always guarantee better performance.
-\item there is no statistically significant difference in accuracy or recall between using different drift detectors.
+\item that applying more layers of complexity (i.e. sampling, drift detection) to the base learner will increase the time and memory requirements, but will not always guarantee better performance.
+\item that there is no statistically significant difference in accuracy or recall between using different drift detectors.
 \end{itemize} 
 
 \section{Approach}
 
-MOA and  Weka libraries include a lot of ready-to-use algorithms for stream data mining. We may use MOAÕs API or command line to run our experiment programmatically in Java. The code should be performing following steps in order:
-first we will generate some synthetic data streams with imbalanced class distribution using data feeding module below, each type of data stream will be generated 30 times with different seed;
-save stream to arff data set;
-we use sampling module to re-balance the class distribution for those data sets;
-we use classification module to test and train models using the data streams;
-evaluation module will be used to extract useful measurements.
-
+MOA and  Weka libraries include a lot of ready-to-use algorithms for stream data mining. We will use MOAÕs API or command line to run our experiment programmatically in Java. We will generate 9 synthetic data streams with no/some/high class imbalance (through manual manipulation) and with no/gradual/abrupt concept drift (through the stream generators listed below). On each synthetic dataset, we will run our classifier with each combination of drift detector and sampling method 30 times to ensure representative measures of the underlying performance. Through the testing suite we will develop, we will record the measurements listed above per run, and use ANOVA in R on the results to compare each metric for different combinations of drift detector and sampling method.
 	
 %\subsection{Implementation}						
 \subsection{System architecture}				
-Our system architecture consists of sampling module, data feeding module, drift detection module, learning module and evaluation module. The drift detection module and learning module could be combined if the learning algorithm is capable of drift detection. In one particular module, when there are two or more algorithms that want to compare their performance with each other, we will run them one by one and record their performance metrics. And our final result will contain all the possible algorithm combinations between different modules.
+Our system architecture consists of our stream generators, sampling modules, drift detection modules, learning module and evaluation module. The drift detection module and learning module may be combined where MOA offers a combined implementation e.g. the Adaptive Hoeffding Tree which combines the Hoeffding Tree and ADWIN. Our testing module will output metrics from all of our experiments to one CSV file which we will then use for evaluation in R. Our final result will compare results for the possible algorithm combinations for our nine separate datasets.
 
 \subsubsection{Sampling module}
-SMOTE(Synthetic Minority Over-Sampling TEchnique) is a popular approach which increases new, non-replicated minority class instances to the training dataset. 
-When we have external arff dataset, we will apply SMOTE sampling on arff dataset to re-balance as part of the experiment procedure, so that after pre-processing the class distribution of training dataset is balanced. We also want to see the performance without sampling approach presented in the system, in which case we wonÕt apply apply any sampling techniques.		
+SMOTE(Synthetic Minority Over-Sampling TEchnique) is a popular approach which increases new, non-replicated minority class instances to the training dataset. We will apply SMOTE sampling to our ARFF datasets to re-balance them, so that after pre-processing, the class distribution of the training dataset is balanced. We also want to see the performance without sampling applied: for these experiments, we won't apply any sampling techniques. Given enough time, we will try NCL as an alternative sampling technique.		
 		
-\subsubsection{Data feeding module}
+\subsubsection{Stream generator}
 Streams will be generated using the following MOA classes:
 \begin{itemize}
 \item NoChangeGenerator
 \item SEAGenerator/AbruptChangeGenerator for abrupt concept drift
 \item GradualChangeGenerator
-\item ConceptDriftStream+ArffFileStream
 \end{itemize}
-Each generator will be used to generate 30 streams with different random seed.  Non-Drifted data stream could be joining concept drift stream to form a concept-drifted stream.
+We will combine the ConceptDriftStream objects above with an imbalanced ArffFileStream to generate an imbalanced dataset with concept drift.
+
+%Each generator will be used to generate 30 streams with different random seed.  Non-Drifted data stream could be joining concept drift stream to form a concept-drifted stream.
 
 \subsubsection{Classification module}
 
 \begin{itemize}
-\item NoChange Or HoeffdingTree(VFDT)
-\\
-This classifier is chosen because we want to see how the classifier performs when it cannot handle concept drift, and it will be our baseline classifier for reference point. A Hoeffding tree is an incremental, anytime decision tree induction algorithm that is capable of learning from data streams, assuming that the distribution generating examples does not change over time. Hoeffding trees exploit the fact that a small sample can often be enough to choose an optimal splitting attribute. This idea is supported mathematically by the Hoeffding bound, which quantiÞes the number of instances needed to estimate some statistics within a prescribed precision.
-A theoretically appealing feature of Hoeffding Trees not shared by other incremental decision tree learners is that it guarantees the performance. 
+\item HoeffdingTree(VFDT)
+
+We have chosen to use the HoeffdingTree as a base learner. A Hoeffding tree is an incremental, anytime decision tree induction algorithm that is capable of learning from data streams. We have detailed this tree in our submitted literature review. We have chosen to use Hoeffding trees as they are popular within data streaming implementations. Importantly, it has no intrinsic characteristics to help it adjust to concept drift.
+%It assumes that the distribution generating examples does not change over time. Hoeffding trees exploit the fact that a small sample can often be enough to choose an optimal splitting attribute. This idea is supported mathematically by the Hoeffding bound, which quantifies the number of instances needed to estimate some statistics within a prescribed precision.
 
 \item SingleClassifierDrift(optional) 
-\\
-This is a wrapper of any base learner also capable of handling concept drift datasets any drift detection method could be used along with it, e.g. DDM, EDDM, ADWIN.
+
+This is a wrapper for any base learner capable of handling concept drift datasets. It allows any drift detection method to be used along with it, such as PHT and ADWIN.
+
 \item Hoeffding Adaptive Tree
-\\
-Hoeffding Window Tree that uses ADWIN as a change detector. Hoeffding Adaptive Tree as a new method that evolving from Hoeffding Window Tree, adaptively learn from data streams that change over time without needing a fixed size of sliding window. The optimal size of the sliding window is a very difficult parameter to guess for users, since it depends on the rate of change of the distribution of the dataset. 
+
+This is derived from the Hoeffding Window Tree and uses ADWIN as a change detector. These adaptively learn from data streams that change over time without needing a fixed size of sliding window. The optimal size of the sliding window is a very difficult parameter to guess for users, since it depends on the rate of change of the distribution of the dataset. The Hoeffding Adaptive Tree sidesteps this issue.
 \end{itemize}
 				
 \subsubsection{Evaluation module}
-We will use an evaluation method implemented in MOA: Interleaved Test-Then-Train or Prequential, each individual example is used to test the model before it is used for training, and from this the accuracy is incrementally updated. This scheme has the advantage that no holdout set is needed for testing, making maximum use of the available data. 
-The following measurements will be used: accuray, time, memory usage, AUC, Kappa-statistic, Precision, Recall, F-Measure. Recall is the True Positive rate. Precision is the Positive Predicted Value. F-measure is a combination of recall and precision. This represents a harmonic mean between recall and precision. In practice, high F-measure value ensures that both recall and precision are reasonably high.
-The area under a ROC (Receiver Operating Characteristic)curve (AUC) provides a single measure of a classifierÕs performance for evaluating which model is better on average.
+We will use an evaluation method implemented in MOA: either Interleaved Test-Then-Train or Prequential. Each individual example is used to test the model before it is used for training, and from this the accuracy is incrementally updated. This scheme has the advantage that no holdout set is needed for testing, making maximum use of the available data.
+
+The following measurements will be used: memory usage, runtime, overall accuracy, recall, precision and F-score. Precision is the Positive Predicted Value. F-measure is a combination of recall and precision, representing a harmonic mean. In practice, high F-measure values ensure that both recall and precision are reasonably high.
+
+We may use ROC (Receiver Operating Characteristic)curves, which provides a single measure of a classifierÕs performance for comparing models' mean performance. 
 
 \section{Anticipated Results}
 
-We expect ADWIN to have better performance in terms of runtime as ADWIN has been previously shown to have the lowest evaluation time for most datasets (with a variety of properties) at a 95\% confidence interval  by Goncalves et al \cite{gonc14}. We also expect that the accuracy of ADWIN would be higher than that of PHT and methods without drift detector, but the difference between ADWIN and PHT would be negligable as Goncalves et al showed that there is no difference between the performance of classifiers at a p-level of 0.05 based on the Nemenyi test \cite{gonc14}. However as their results did not focus on imbalanced datasets, the conclusions can not be generalised to datasets with skewed distributions. 
-\\\\
-The SMOTE sampling technique has been shown to be an effective way to deal with data with imbalanced classes \cite{SMOTE} and creates better decision boundaries by shifting the boundary away from positive instances when combined with support vector machines - SVMs (Akbani et al, 2004 as cited by \cite{neuro}). Other studies such as Hulse et al's paper \cite{hulse} have evaluated the effects of combining different sampling methods with different learners for imbalanced datasets, but did not examine datasets with underlying concept drift. Hulse et al. showed that there is an interaction between the sampling technique and learner, and the effectiveness of a particular sampling technique depends on the type of learner that is used \cite{hulse}. Thus it is probable that the performance of sampling techniques also depends on the type of drift detector that is used in streams with concept drift. 
+We expect that the accuracy of ADWIN and PHT will perform similarly, and better than without a drift detector. This is supported by Goncalves et al, who showed that there is no difference between the performance of classifiers using either method at a p-level of 0.05, based on the Nemenyi test \cite{gonc14}. However as their results did not focus on imbalanced datasets, the conclusions can not be generalised to datasets with skewed distributions. We expect drift detectors to provide little improvement when there is class imbalance without sampling methods, as drift detectors have trouble detecting fluctuations in rare classes.
+
+We expect ADWIN to have a better runtime than PHT, as ADWIN has been previously shown to have the lowest evaluation time for most datasets (with a variety of properties) at a 95\% confidence interval  by Goncalves et al \cite{gonc14}. We expect to have the lowest runtime when not using drift detectors.
+
+The SMOTE sampling technique has been shown to be an effective way to deal with data with imbalanced classes \cite{SMOTE} and creates better decision boundaries by shifting the boundary away from positive instances when combined with support vector machines - SVMs (Akbani et al, 2004 as cited by \cite{neuro}). Other studies such as Hulse et al's paper \cite{hulse} have evaluated the effects of combining different sampling methods with different learners for imbalanced datasets, but did not examine datasets with underlying concept drift. Hulse et al. showed that there is an interaction between the sampling technique and learner, and the effectiveness of a particular sampling technique depends on the type of learner that is used \cite{hulse}. Thus it is probable that the performance of sampling techniques also depends on the type of drift detector that is used in streams with concept drift. We hope and expect that using sampling techniques on our data will allow concept drift detectors to function near-optimally.
 
 \section{Significance of the Proposed Research}
 
-McKinsey Global Institute \cite{mckinsey} have deemed 'Big Data' to be, "the next frontier for innovation, competition and productivity". They state that it is relevant to '/textbf{every} business and industry function', and that it will become 'a key basis of competition and growth for individual firms'.
+McKinsey Global Institute \cite{mckinsey} have deemed 'Big Data' to be 'the next frontier for innovation, competition and productivity'. They state that it is relevant to '/textbf{every} business and industry function', and that it will become 'a key basis of competition and growth for individual firms'.
 
-This research sits at the forefront of data stream mining, which is a critical technique in handling the volume and velocity of data in today's academic, business and governmental context. However, data stream mining is prone to issues that are not addressed in traditional data analysis. A robust, reliable technique will need to account for concept drift and imbalanced datasets, classifying accurately while still performing acceptably in time and memory usage. These issues are, in fact, common in data streams \cite{wan13}. If streaming analysis is not robust in the presence of these issues, then it will not be fit to analyse real-world data that comes from an unknown distribution, and cannot help in solving the problems that 'Big Data' analysis creates.
+This research sits at the forefront of data stream mining, which is critical for handling the volume and velocity of data for organisations today. However, data stream mining is prone to issues that are not addressed in traditional data analysis. A robust, reliable technique will need to account for concept drift and imbalanced datasets, classifying accurately while still performing acceptably in time and memory usage. These issues are, in fact, common in data streams \cite{wan13}. If streaming analysis is not robust in the presence of these issues, then it will not be fit to analyse real-world data that comes from an unknown distribution, and cannot help in solving the problems that 'Big Data' analysis creates.
 
 More specific to the field, the algorithms we test in this paper are recent and highly-regarded. The research community will benefit from having a clear analysis of how well they function under the particular conditions we have set. This work examines algorithms that we have found to be influential and important within our literature review. By testing them under our specific conditions, we will test their robustness. Our results will show what they do effectively and may highlight areas of improvement for fellow researchers.
 
 \section{Conclusion}
 
-Through this report, we have outlined our intended research into data streaming with concept drift and imbalanced classes. We describe why we are motivated to study this area. We explain our research question, and divide it into three clear hypotheses that we will test. We have described the process by which we plan to implement the tools we need to answer our research question, and describe how we will test and evaluate our results. We have discussed what we expect from our results, and justify our opinions through citing similar research. Finally, we have clearly spelt out the contribution we will be making to the very relevant field of data stream analysis through our research.
+Through this report, we have outlined our intended research into data streaming with concept drift and imbalanced classes. We describe why we are motivated to study this area. We explain our research question, and divide it into three clear hypotheses that we will test. We have described the process by which we plan to implement the tools we need to answer our research question, and describe how we will test and evaluate our results. We have discussed what we expect from our results, and justify our opinions through citing similar research. Finally, we have clearly spelt out the contribution we will be making to the field of data stream analysis through our research.
 
 \newpage
 \bibliographystyle{ieeetran}

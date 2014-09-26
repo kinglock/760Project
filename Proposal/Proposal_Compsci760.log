@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.5)  26 SEP 2014 17:46
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.8.5)  26 SEP 2014 19:11
 entering extended mode
 **Proposal_Compsci760.tex
 ("E:\COMPSCI 760\Group project\git\760Project\Proposal\Proposal_Compsci760.tex"
@@ -198,20 +198,10 @@ LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
 
 Missing character: There is no Ã in font cmss10!
 Missing character: There is no • in font cmss10!
-[2]
+[2] [3]
 Missing character: There is no Ã in font cmss10!
 Missing character: There is no • in font cmss10!
-Missing character: There is no Ã in font cmss10!
-Missing character: There is no ž in font cmss10!
- [3]
-Missing character: There is no Ã in font cmss10!
-Missing character: There is no • in font cmss10!
-
-Underfull \hbox (badness 10000) in paragraph at lines 159--162
-
- []
-
-[4] [5]
+ [4] [5]
 ("E:\COMPSCI 760\Group project\git\760Project\Proposal\Proposal_Compsci760.bbl"
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/it' in size <10.95> not available
@@ -237,14 +227,14 @@ Here is how much of TeX's memory you used:
  5291 multiletter control sequences out of 15000+200000
  10364 words of font info for 37 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,6n,20p,1051b,189s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 27i,6n,20p,1060b,189s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss10.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss12.pfb><C
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss17.pfb><C:/
 Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><C:/
 Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmssi10.pfb><C:/P
 rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Proposal_Compsci760.pdf (6 pages, 91965 bytes).
+Output written on Proposal_Compsci760.pdf (6 pages, 91416 bytes).
 PDF statistics:
  45 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
