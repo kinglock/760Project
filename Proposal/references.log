@@ -1,0 +1,160 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdftex 2014.9.26)  26 SEP 2014 16:40
+entering extended mode
+**E:/COMPSCI*760/Group*project/git/760Project/Proposal/references.bib
+("E:/COMPSCI 760/Group project/git/760Project/Proposal/references.bib"
+Overfull \hbox (6.4034pt too wide) in paragraph at lines 3--13
+\tenrm '06. Sixth In-ter-na-tional Con-fer-ence on, title=Entropy-based Con-cep
+t Shift De-tec-tion, year=2006, month=Dec,|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm '
+.\tenrm 0
+.\tenrm 6
+.\tenrm .
+.\glue 4.44444 plus 4.99997 minus 0.37036
+.etc.
+
+
+Overfull \hbox (18.77385pt too wide) in paragraph at lines 3--13
+\tenrm pages=1113-1118, key-words=data anal-y-sis;ubiquitous com-put-ing;contex
+t switch in-di-ca-tion;data streams;entropy-|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm p
+.\tenrm a
+.\tenrm g
+.\tenrm e
+.\tenrm s
+.etc.
+
+
+Overfull \hbox (62.44064pt too wide) in paragraph at lines 3--13
+\tenrm based con-cept shift de-tec-tion;stream en-tropy be-hav-ior;Biomedical m
+on-i-tor-ing;Data min-ing;Entropy;Informatics;Multimedia|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm b
+.\tenrm a
+.\tenrm s
+.\tenrm e
+.\tenrm d
+.etc.
+
+
+Overfull \hbox (75.60722pt too wide) in paragraph at lines 3--13
+\tenrm com-put-ing;Noise mea-sure-ment;Streaming me-dia;Switches;Wearable com-p
+ut-ers;Wearable sen-sors, doi=10.1109/ICDM.2006.66,|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm c
+.\tenrm o
+.\tenrm m
+.\discretionary
+..\tenrm -
+.\tenrm p
+.etc.
+
+Missing character: There is no Ã in font cmr10!
+Missing character: There is no § in font cmr10!
+
+Overfull \hbox (148.16315pt too wide) in paragraph at lines 82--100
+\tenrm 8655", doi = "http://dx.doi.org/10.1016/j.patrec.2013.02.005", url = "ht
+tp://www.sciencedirect.com/science/article/pii/S0167865513000494",|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm 8
+.\tenrm 6
+.\tenrm 5
+.\tenrm 5
+.\tenrm "
+.etc.
+
+Missing character: There is no Ã in font cmr10!
+Missing character: There is no § in font cmr10!
+
+Overfull \hbox (169.57985pt too wide) in paragraph at lines 101--118
+\tenrm "0957-4174", doi = "http://dx.doi.org/10.1016/j.eswa.2014.07.019", url =
+ "http://www.sciencedirect.com/science/article/pii/S0957417414004175",|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm "
+.\tenrm 0
+.\tenrm 9
+.\tenrm 5
+.\tenrm 7
+.etc.
+
+Missing character: There is no Ã in font cmr10!
+Missing character: There is no £ in font cmr10!
+
+Overfull \hbox (3.19041pt too wide) in paragraph at lines 128--138
+\tenrm al-go-rithms;benchmarking datasets;change de-tec-tion;class im-bal-ance 
+prob-lem;concept drift de-tec-tion;confusion|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm a
+.\tenrm l
+.\discretionary
+..\tenrm -
+.\tenrm g
+.\tenrm o
+.etc.
+
+
+Overfull \hbox (49.69054pt too wide) in paragraph at lines 128--138
+\tenrm learn-ing;Accuracy;Change de-tec-tion al-go-rithms;Data mod-els;Predicti
+on al-go-rithms;Reliability;Training;Vectors;Concept|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm l
+.\tenrm e
+.\tenrm a
+.\tenrm r
+.\tenrm n
+.etc.
+
+[1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Overfull \hbox (28.885pt too wide) in paragraph at lines 139--150
+\tenrm ing;online learn-ing;online models;real-world applications;single-class 
+per-for-mance;Accuracy;Bagging;Computational|
+
+\hbox(6.94444+1.94444)x469.75499, glue set - 1.0
+.\tenrm i
+.\tenrm n
+.\tenrm g
+.\tenrm ;
+.\tenrm o
+.etc.
+
+
+Overfull \hbox (15.0794pt too wide) in paragraph at lines 139--150
+\tenrm mod-el-ing;Decision trees;Detectors;Monitoring;Neural net-works, doi=10.
+1109/IJCNN.2013.6706768, ISSN=2161-|
+
+\hbox(7.5+2.5)x469.75499, glue set - 1.0
+.\tenrm m
+.\tenrm o
+.\kern0.27779
+.\tenrm d
+.\discretionary
+..\tenrm -
+.etc.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+<to be read again> 
+                   _
+l.171  issue_
+             date = {Sept. 1994},
+? 
+! Emergency stop.
+<inserted text> 
+                $
+<to be read again> 
+                   _
+l.171  issue_
+             date = {Sept. 1994},
+End of file on the terminal!
+
+!  ==> Fatal error occurred, no output PDF file produced!
