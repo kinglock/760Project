@@ -11,6 +11,7 @@ import moa.streams.ArffFileStream;
 
 import org.apache.commons.io.FileUtils;
 
+import weka.core.AttributeStats;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
@@ -18,6 +19,8 @@ import weka.filters.Filter;
 import weka.filters.supervised.instance.SMOTE;
 
 public class Experiment {
+
+	private double desiredClassRatio;
 
 	private static Instances data;
 
@@ -28,12 +31,15 @@ public class Experiment {
 	private int numberSamplesCorrect;
 
 	private int sampleSize = 2000;
+
+	private boolean performSmote = true;
+	
 	private static String currentArffAbsolutePath;
 
 	public Experiment() {
 	}
 
-	public void run(int numInstances, boolean isTesting) throws Exception {
+	public void run(int numInstances, boolean isTesting, String csvFileName) throws Exception {
 		// RandomRBFGenerator stream = new RandomRBFGenerator();
 		// SEAGenerator stream = new SEAGenerator();
 		ArffFileStream stream = new ArffFileStream(currentArffAbsolutePath, -1);
@@ -134,14 +140,30 @@ public class Experiment {
 		 * ignore if there is only one class
 		 */
 		int distinctCount = sample.attributeStats(sample.classIndex()).distinctCount;
-		if (distinctCount == 1) {
+		if (distinctCount == 1 || !this.performSmote) {
 			return sample;
 		}
 
+		/*
+		 * ratio   1:1 for 20:40, 100%
+		 * ratio 0.9:1 for 20:40, 80%
+		 */
+		AttributeStats attributeStats = sample.attributeStats(sample.classIndex());
+		System.out.println(attributeStats.toString());
+		double ratio = (double)attributeStats.nominalCounts[0]/attributeStats.nominalCounts[1];
+		double increasedPercentage = 0;
+		if (ratio/desiredClassRatio > 1)
+			increasedPercentage =(double) (ratio/desiredClassRatio - 1);
+		else
+			increasedPercentage =(double) (desiredClassRatio/ratio - 1);
+			
+		smote.setPercentage(increasedPercentage*100);
+		System.out.println("SMOTE minority class increased percentage:"+increasedPercentage*100);
 		smote.setInputFormat(sample);
 		Instances newDataset = Filter.useFilter(sample, smote);
-		// System.out.println("after applying SMOTE:"+newDataset.toSummaryString());
-		System.out.println(newDataset.attributeStats(newDataset.numAttributes() - 1));
+		
+		System.out.println(newDataset.attributeStats(sample.classIndex()));
+
 		return newDataset;
 	}
 
@@ -200,5 +222,14 @@ public class Experiment {
 
 	public void setSampleSize(int sampleSize) {
 		this.sampleSize = sampleSize;
+	}
+
+	public void setDesiredClassRatio(double desiredClassRatio) {
+		this.desiredClassRatio = desiredClassRatio;
+	}
+
+	public void setPerformSMOTE(boolean performSmote) {
+		this.performSmote = performSmote;
+		
 	}
 }
