@@ -1,11 +1,6 @@
-import java.io.File;
-import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,15 +8,16 @@ import moa.classifiers.Classifier;
 import moa.classifiers.core.driftdetection.ChangeDetector;
 import moa.classifiers.drift.DriftDetectionMethodClassifier;
 import moa.options.ClassOption;
-
-import org.apache.commons.io.FileUtils;
-
-import weka.core.converters.ConverterUtils.DataSource;
+import moa.options.IntOption;
+import moa.streams.InstanceStream;
+import moa.streams.generators.RandomRBFGenerator;
+import moa.streams.generators.SEAGenerator;
 import weka.filters.supervised.instance.SMOTE;
 
 
 public class TestSuite {
 
+	private static final int NUM_OF_SEEDS = 3;
 	private static final int MAX_NUM_INSTANCES_USED_IN_ARFF = 10000;
 	private static final int SMOTE_SAMPLE_SIZE = 2000;
 	private static final String SMOTE_PARAS = "-C 0 -K 5 -P 90.0 -S 1";
@@ -39,30 +35,51 @@ public class TestSuite {
 		exp.setDesiredClassRatio(DESIRED_CLASS_RATIO);
 		Experiment.setSmote(smote);
 
-		URL resource = exp.getClass().getClassLoader().getResource(".");
-		String fileString = resource.getPath();
-		Collection<File> files = FileUtils.listFiles(new File(fileString), new String[] { "arff" }, false);
-		
 		Map<String, DriftDetectionMethodClassifier> map = initializeDriftLearners();
+		Map<String, List<InstanceStream>> streams = initializeGenerator();
 		
-		for (File file : files) {
-			String currentArffAbsolutePath = file.getAbsolutePath();
-			String currentFileName = file.getName();
-
-//			System.out.println(currentArffAbsolutePath);
-			exp.setCurrentArffAbsolutePath(currentArffAbsolutePath);
-			DataSource source = new DataSource(currentArffAbsolutePath);
-			exp.setData(source.getDataSet());
-			
-			for (Entry<String, DriftDetectionMethodClassifier> entry : map.entrySet()) {
-				String csvFileName = currentFileName+"_"+entry.getKey();
-				System.out.println(csvFileName);
-				exp.setDriftLearner(entry.getValue());
-				exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
-				
+		for (Entry<String, List<InstanceStream>> entryOfOneDataset : streams.entrySet()) {
+			List<InstanceStream> streamsOfOneDataset = entryOfOneDataset.getValue();
+			for(int seed = 0; seed < streamsOfOneDataset.size(); seed++){
+				String currentFileName = entryOfOneDataset.getKey()+"_SEED_"+(seed+1);
+				InstanceStream stream = streamsOfOneDataset.get(seed);
+				exp.setStream(stream);
+				exp.setTestStream(stream);
+				for (Entry<String, DriftDetectionMethodClassifier> entry : map.entrySet()) {
+					String csvFileName = currentFileName+"_"+entry.getKey();
+					exp.setDriftLearner(entry.getValue());
+					exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
+					
+				}
 			}
+
 		}
 
+	}
+
+	private static Map<String, List<InstanceStream>> initializeGenerator() {
+		Map<String, List<InstanceStream>> map = new HashMap<String, List<InstanceStream>>();
+		
+		List<InstanceStream> streamOfOneDataset1 = new LinkedList<InstanceStream>();
+		List<InstanceStream> streamOfOneDataset2 = new LinkedList<InstanceStream>();
+		for(int seed = 1; seed < NUM_OF_SEEDS; seed++){
+			RandomRBFGenerator stream1 = new RandomRBFGenerator();
+			stream1.modelRandomSeedOption = new IntOption("modelRandomSeed",
+		            'r', "Seed for random generation of model.", seed);
+			streamOfOneDataset1.add(stream1);
+			
+			SEAGenerator stream2 = new SEAGenerator();
+			stream2.instanceRandomSeedOption = new IntOption(
+		            "instanceRandomSeed", 'i',
+		            "Seed for random generation of instances.", seed);
+			streamOfOneDataset2.add(stream2);
+		}
+		
+		map.put("RandomRBFGenerator", streamOfOneDataset1);
+		map.put("SEAGenerator", streamOfOneDataset2);
+
+		return map;
+		
 	}
 
 	private static Map<String, DriftDetectionMethodClassifier> initializeDriftLearners() {

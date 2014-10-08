@@ -1,20 +1,13 @@
-import java.io.File;
-import java.net.URL;
-import java.util.Collection;
-
 import moa.classifiers.Classifier;
-import moa.classifiers.core.driftdetection.ChangeDetector;
 import moa.classifiers.drift.DriftDetectionMethodClassifier;
 import moa.core.TimingUtils;
-import moa.options.ClassOption;
+import moa.options.OptionHandler;
 import moa.streams.ArffFileStream;
-
-import org.apache.commons.io.FileUtils;
-
+import moa.streams.InstanceStream;
+import moa.streams.generators.RandomRBFGenerator;
 import weka.core.AttributeStats;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.instance.SMOTE;
 
@@ -36,16 +29,18 @@ public class Experiment {
 	
 	private static String currentArffAbsolutePath;
 
+	private InstanceStream stream;
+	private InstanceStream testStream;
+
 	public Experiment() {
 	}
 
 	public void run(int numInstances, boolean isTesting, String csvFileName) throws Exception {
-		// RandomRBFGenerator stream = new RandomRBFGenerator();
-		// SEAGenerator stream = new SEAGenerator();
-		ArffFileStream stream = new ArffFileStream(currentArffAbsolutePath, -1);
-		stream.prepareForUse();
+//		stream = new ArffFileStream(currentArffAbsolutePath, -1);
+		((OptionHandler) this.stream).prepareForUse();
+		((OptionHandler) this.testStream).prepareForUse();
 
-		learner.setModelContext(stream.getHeader());
+		learner.setModelContext(this.stream.getHeader());
 		learner.prepareForUse();
 
 		int numberSamples = 0;
@@ -56,12 +51,12 @@ public class Experiment {
 		 * Generate a fixed size sample
 		 */
 		int curentSize = 0;
-		Instances sample = new Instances(data, sampleSize);
+		Instances sample = new Instances(this.stream.getHeader(), sampleSize);
 
-		while (stream.hasMoreInstances() && numberSamples < numInstances) {
+		while (this.stream.hasMoreInstances() && numberSamples < numInstances) {
 			if (curentSize < sampleSize) {
 
-				Instance trainInst = stream.nextInstance();
+				Instance trainInst = this.stream.nextInstance();
 
 				numberSamples++;
 				sample.add(trainInst);
@@ -94,10 +89,9 @@ public class Experiment {
 		int count_class_zero = 0;
 		if (isTesting) {
 			numberSamplesCorrect = 0;
-			stream = new ArffFileStream(currentArffAbsolutePath, -1);
-			stream.prepareForUse();
-			while (stream.hasMoreInstances()) {
-				Instance testInst = stream.nextInstance();
+			this.testStream.restart();
+			while (this.testStream.hasMoreInstances() && count < numInstances*1000) {
+				Instance testInst = this.testStream.nextInstance();
 				if (learner.correctlyClassifies(testInst)) {
 					numberSamplesCorrect++;
 				}
@@ -110,7 +104,7 @@ public class Experiment {
 
 		double accuracy = 100.0 * (double) numberSamplesCorrect / (double) count;
 		double time = TimingUtils.nanoTimeToSeconds(TimingUtils.getNanoCPUTimeOfCurrentThread() - evaluateStartTime);
-		System.out.println(count + " instances processed with " + accuracy + "% accuracy in " + time
+		System.out.println(csvFileName + ": "+ + count + " instances processed with " + accuracy + "% accuracy in " + time
 				+ " seconds.");
 		System.out.println(count_class_zero + " instances with class value of 0!");
 	}
@@ -118,15 +112,16 @@ public class Experiment {
 	private void testPerformance(Instances sample, int numberSamples) {
 		numberSamplesCorrect = 0;
 		int index = 0;
-		while (index < numberSamples) {
-			if (learner.correctlyClassifies(data.instance(index))) {
+		this.testStream.restart();
+		while (index < numberSamples && testStream.hasMoreInstances()) {
+			if (learner.correctlyClassifies(testStream.nextInstance())) {
 				numberSamplesCorrect++;
 			}
 			index++;
 		}
 
 		double accuracy = 100.0 * (double) numberSamplesCorrect / (double) numberSamples;
-		System.err.println(numberSamples + " Current accuracy is: " + accuracy + "%");
+		System.err.println(numberSamples + " Current accuracy is: " + accuracy + "% on test stream");
 
 	}
 
@@ -230,6 +225,19 @@ public class Experiment {
 
 	public void setPerformSMOTE(boolean performSmote) {
 		this.performSmote = performSmote;
+		
+	}
+
+	public InstanceStream getStream() {
+		return stream;
+	}
+
+	public void setStream(InstanceStream stream) {
+		this.stream = stream;
+	}
+
+	public void setTestStream(InstanceStream testStream) {
+		this.testStream = testStream;
 		
 	}
 }
