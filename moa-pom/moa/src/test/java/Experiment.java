@@ -1,17 +1,24 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import moa.classifiers.Classifier;
 import moa.classifiers.drift.DriftDetectionMethodClassifier;
 import moa.core.TimingUtils;
 import moa.options.OptionHandler;
-import moa.streams.ArffFileStream;
+import moa.streams.ConceptDriftStream;
 import moa.streams.InstanceStream;
-import moa.streams.generators.RandomRBFGenerator;
+import moa.tasks.WriteStreamToARFFFile;
 import weka.core.AttributeStats;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Utils;
 import weka.filters.Filter;
 import weka.filters.supervised.instance.SMOTE;
 
 public class Experiment {
+
+	private static final int CLASS_INDEX = 1;
 
 	private double desiredClassRatio;
 
@@ -31,11 +38,13 @@ public class Experiment {
 
 	private InstanceStream stream;
 	private InstanceStream testStream;
+	private BufferedWriter bw;
 
 	public Experiment() {
 	}
 
 	public void run(int numInstances, boolean isTesting, String csvFileName) throws Exception {
+		bw = new BufferedWriter(new FileWriter(csvFileName + ".csv"));
 //		stream = new ArffFileStream(currentArffAbsolutePath, -1);
 		((OptionHandler) this.stream).prepareForUse();
 		((OptionHandler) this.testStream).prepareForUse();
@@ -87,44 +96,197 @@ public class Experiment {
 		 */
 		int count = 0;
 		int count_class_zero = 0;
+		int tP = 0, tN = 0, fP = 0, fN = 0;
 		if (isTesting) {
 			numberSamplesCorrect = 0;
 			this.testStream.restart();
-			while (this.testStream.hasMoreInstances() && count < numInstances*1000) {
+			while (this.testStream.hasMoreInstances() && count < numInstances) {
 				Instance testInst = this.testStream.nextInstance();
-				if (learner.correctlyClassifies(testInst)) {
-					numberSamplesCorrect++;
-				}
+//				if (learner.correctlyClassifies(testInst)) {
+//					numberSamplesCorrect++;
+//				}
+				
+				if (learner.correctlyClassifies(testInst)) { // correct classification
+                    numberSamplesCorrect++;
+                    if (Utils.maxIndex(learner.getVotesForInstance(testInst)) == CLASS_INDEX) { // true positive
+                        tP++;
+                    } else { // true negative
+                        tN++;
+                    }
+                } else { // incorrect classification
+                    if (Utils.maxIndex(learner.getVotesForInstance(testInst)) == CLASS_INDEX) { // false positive
+                        fP++;
+                    } else { // false negative
+                        fN++;
+                    }
+                }
 				if (testInst.classValue() == 0) {
 					count_class_zero++;
 				}
 				count++;
+				
 			}
 		}
-
-		double accuracy = 100.0 * (double) numberSamplesCorrect / (double) count;
+		
+		double accuracy = calculateAccuracy(numberSamplesCorrect, numInstances);
+		double recall = calculateRecall(tP, fN);
+		double precision = calculatePrecision(tP, fP);
+		double f1 = calculateF1(precision, recall);
+		
 		double time = TimingUtils.nanoTimeToSeconds(TimingUtils.getNanoCPUTimeOfCurrentThread() - evaluateStartTime);
 		System.out.println(csvFileName + ": "+ + count + " instances processed with " + accuracy + "% accuracy in " + time
 				+ " seconds.");
 		System.out.println(count_class_zero + " instances with class value of 0!");
+		
+//		bw.write(count + "\t" + accuracy + "\t" + precision + "\t" + recall + "\t" + f1 + "\n");
+		bw.close();
 	}
 
-	private void testPerformance(Instances sample, int numberSamples) {
+	private double calculatePrecision(int tP, int fP) {
+		// TODO Auto-generated method stub
+		return (double) tP / (double) (tP + fP);
+	}
+
+	private double calculateRecall(int tP, int fN) {
+		// TODO Auto-generated method stub
+		return (double) tP / (double) (tP + fN);
+	}
+
+	private double calculateF1(double precision, double recall) {
+		// TODO Auto-generated method stub
+		return (double) (2 * precision * recall) / (double) (precision + recall);
+	}
+
+	private double calculateAccuracy(int numCorrect, int totalNum) {
+		// TODO Auto-generated method stub
+		return 100.0 * (double) (numCorrect) / (double) (totalNum);
+		
+	}
+
+	private void testPerformance(Instances sample, int numberSamples) throws IOException {
 		numberSamplesCorrect = 0;
+		int tP = 0, tN = 0, fP = 0, fN = 0;
 		int index = 0;
 		this.testStream.restart();
 		while (index < numberSamples && testStream.hasMoreInstances()) {
-			if (learner.correctlyClassifies(testStream.nextInstance())) {
-				numberSamplesCorrect++;
-			}
 			index++;
+			Instance instance = testStream.nextInstance();
+			
+			if (learner.correctlyClassifies(instance)) { // correct classification
+                numberSamplesCorrect++;
+                if (Utils.maxIndex(learner.getVotesForInstance(instance)) == CLASS_INDEX) { // true positive
+                    tP++;
+                } else { // true negative
+                    tN++;
+                }
+            } else { // incorrect classification
+                if (Utils.maxIndex(learner.getVotesForInstance(instance)) == CLASS_INDEX) { // false positive
+                    fP++;
+                } else { // false negative
+                    fN++;
+                }
+            }
 		}
-
-		double accuracy = 100.0 * (double) numberSamplesCorrect / (double) numberSamples;
+		double accuracy = calculateAccuracy(numberSamplesCorrect, numberSamples);
+		double recall = calculateRecall(tP, fN);
+		double precision = calculatePrecision(tP, fP);
+		double f1 = calculateF1(precision, recall);
 		System.err.println(numberSamples + " Current accuracy is: " + accuracy + "% on test stream");
+		bw.write(numberSamples + "\t" + accuracy + "\t" + precision + "\t" + recall + "\t" + f1 + "\n");
+
 
 	}
+	
+	// no concept drift stream
+	 public static InstanceStream createImbalancedStaggerNoDriftStream(double imbalance, int seed) {
+	        StaggerImbalanced stagger = new StaggerImbalanced();
+	        stagger.imbalanceWeightOption.setValue(imbalance);
+	        stagger.imbalanceClassesOption.setValue(true);
+	        stagger.functionOption.setValue(2); // use function 2
+	        stagger.instanceRandomSeedOption.setValue(seed); // stream seed
+	        stagger.prepareForUse();
+	        return stagger;
+	 }
+	
+	
+	// abrupt concept drift stream
+	 public static InstanceStream createImbalancedStaggerDriftStream(int position, int width, double imbalance, int seed, String filename) {
+	        StaggerImbalanced stagger = new StaggerImbalanced();
+	        stagger.imbalanceWeightOption.setValue(imbalance);
+	        stagger.imbalanceClassesOption.setValue(true);
+	        stagger.functionOption.setValue(2); // use function 2
+	        stagger.instanceRandomSeedOption.setValue(222); // stream seed
+	        stagger.prepareForUse();
+	        //checkImbalance(stagger, 100000);
 
+	        StaggerImbalanced staggerDrift = new StaggerImbalanced(); // drift stream with function 1
+	        staggerDrift.imbalanceWeightOption.setValue(imbalance);
+	        staggerDrift.imbalanceClassesOption.setValue(true);
+	        staggerDrift.prepareForUse();
+	        //checkImbalance(staggerDrift, 100000);
+
+	        ConceptDriftStream driftStream = new ConceptDriftStream();
+	        driftStream.streamOption.setCurrentObject(stagger); // combines two stagger streams        
+	        driftStream.driftstreamOption.setCurrentObject(staggerDrift); // set drift stream
+	        driftStream.positionOption.setValue(position);
+	        driftStream.widthOption.setValue(width);
+	        driftStream.randomSeedOption.setValue(seed); // seed for combining streams
+
+	        driftStream.prepareForUse();
+	        //System.out.println("streamOption " + driftStream.streamOption.getValueAsCLIString());
+	        //System.out.println("driftStream " + driftStream.driftstreamOption.getValueAsCLIString());
+
+	        if (filename != null) {
+	            WriteStreamToARFFFile file = new WriteStreamToARFFFile();
+	            file.streamOption.setCurrentObject(driftStream);
+	            file.maxInstancesOption.setValue(1000000);
+	            file.arffFileOption.setValue(filename);
+	            file.doTask();
+	        }
+	        return driftStream;
+	    }	 	
+	 
+	 	// gradual concept drift stream
+	    public InstanceStream createHyperplaneStream(double magnitude, int seed, int classIndex) {
+	        HyperplaneBalanced hyper = new HyperplaneBalanced();
+	        hyper.magChangeOption.setValue(magnitude);
+	        hyper.numClassesOption.setValue(2);
+	        hyper.instanceRandomSeedOption.setValue(seed);
+	        hyper.desiredClassOption.setValue(classIndex); // set minority class       
+	        hyper.imbalanceClassesOption.setValue(true); // create imbalanced hyperplane
+	        hyper.imbalanceWeightOption.setValue(0.1); // 10% imbalance
+	        hyper.prepareForUse();
+
+	        checkImbalance(hyper, 10000);
+	        return hyper;
+	    }
+	 
+	    private void checkImbalance(InstanceStream stream, int streamSize) {
+	        int numInstances = streamSize;
+	        //((OptionHandler) stream).prepareForUse(); // prepare stream   
+
+	        int totalSamples = 0;
+	        int class0 = 0;
+	        int class1 = 0;
+
+	        while (stream.hasMoreInstances() && totalSamples < 100000) {
+	            //System.out.println("sample " + totalSamples);
+	            totalSamples++;
+	            Instance inst = stream.nextInstance();
+	            if (inst.classValue() == 0) {
+	                class0++;
+	            } else if (inst.classValue() == 1) {
+	                class1++;
+	            } else {
+	                System.out.println("class " + inst.classValue());
+	            }
+
+	        }
+
+	        System.out.println("class0 " + class0 + " , class1 " + class1);
+
+	    }
+	    
 	private Instances applySMOTE(Instances sample) throws Exception {
 
 		// System.out.println("starting applying smote...");
