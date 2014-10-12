@@ -38,7 +38,7 @@ public class StaggerImbalanced extends STAGGERGenerator {
 
             // determine class
             group = classificationFunctions[this.functionOption.getValue() - 1].determineClass(size, color, shape);
-            if ( !this.balanceClassesOption.isSet() && !this.imbalanceClassesOption.isSet() ) { // modified
+            if (!this.balanceClassesOption.isSet() && !this.imbalanceClassesOption.isSet()) { // modified
                 desiredClassFound = true;
             } else {
                 // balance the classes
