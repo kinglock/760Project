@@ -12,35 +12,44 @@ import weka.core.Instance;
 public class StreamGen {
 
     private static BufferedWriter writer;
-    
+
     private static final int POSITION = 300000; // position of abrupt drift 
     private static final int WIDTH = 50000; // width of abrupt drift (use this for less abrupt sigmoidal drifts)
     private static final int ALPHA = 90; // angle of abrupt drift (use this for more abrupt drifts) 
-    
+
     private static final double SPEED = 0.01; // speed of gradual drift
     private static final int CENTROIDS = 3; // number of centroids with drift for gruadual drift stream
-     
-    public static void main(String[] args) throws IOException {
-        //writer = new BufferedWriter(new FileWriter("class1.txt"));
-        double imbalance = 0.5;
-        for (int i = 0; i < 1; i++) { 
-            createImbalancedStaggerDriftStream(imbalance, POSITION, WIDTH, ALPHA, false, i);
-            createRBFDriftStream(imbalance, CENTROIDS, SPEED, i);
-            createImbalancedRBFStream(imbalance, i);
+
+    public static void main(String[] args) throws IOException {    
+        // for testing
+        double imbalance = 0.5;        
+        /*
+        writer = new BufferedWriter(new FileWriter("Stagger_Drift_" + imbalance + "_class1.txt"));
+        writer = new BufferedWriter(new FileWriter("RBF_" + imbalance + "_class1.txt"));
+        writer = new BufferedWriter(new FileWriter("RBF_Drift_" + imbalance + "_class1.txt"));
+        */
+        InstanceStream s;
+        for (int i = 0; i < 35; i++) {
+            /*
+            s = createImbalancedStaggerDriftStream(imbalance, POSITION, WIDTH, ALPHA, false, i);            
+            s = createImbalancedRBFStream(imbalance, i);
+            s = createRBFDriftStream(imbalance, CENTROIDS, SPEED, i);
+            checkImbalance(s, 1000000, 0);
+            */
         }
-        // writer.close();
+        //writer.close();
     }
-    
+
     public static RBFImbalanced createImbalancedRBFStream(double imbalance, int seed) {
         RBFImbalanced rbf = new RBFImbalanced();
         rbf.numClassesOption.setValue(2);
         rbf.instanceRandomSeedOption.setValue(seed);
         rbf.imbalanceWeightOption.setValue(imbalance);
         rbf.prepareForUse();
-
+        
         return rbf;
     }
-    
+
     public static RBFDrift createRBFDriftStream(double imbalance, int centroids, double speed, int seed) {
         RBFDrift rbf = new RBFDrift();
         rbf.numClassesOption.setValue(2);
@@ -68,8 +77,8 @@ public class StreamGen {
     }
 
     /*
-    * The imbalance percentage of this output stream is higher than expected (not safe to use!)    
-    */
+     * The imbalance percentage of this output stream is higher than expected (not safe to use!)    
+     */
     public static InstanceStream createHyperplaneStream(double imbalance, double magnitude, int seed) {
         HyperplaneImbalanced hyper = new HyperplaneImbalanced();
         hyper.magChangeOption.setValue(magnitude);
@@ -86,38 +95,39 @@ public class StreamGen {
 
     public static InstanceStream createImbalancedStaggerDriftStream(double imbalance, int pos, int width, double alpha, boolean useWidth, int seed) {
         InstanceStream s1 = createImbalancedStaggerNoDriftStream(imbalance, 1, seed); // function 1
-        InstanceStream s2 = createImbalancedStaggerNoDriftStream(imbalance, 2, seed+1); // function 2
-        return createAbruptDriftStream(s1, s2, pos, width, alpha, useWidth, seed);
+        InstanceStream s2 = createImbalancedStaggerNoDriftStream(imbalance, 2, seed + 1); // function 2  
+        
+        InstanceStream s3 = createAbruptDriftStream(s1, s2, pos, width, alpha, useWidth, seed);        
+        return s3;
     }
-    
+
     // STAGGER stream with two suddens drift points
     // Note: this stream has not been tested
-    public static InstanceStream createImbalancedStaggerTwoAbruptDrifts(double imbalance, int pos1, int pos2, int seed) {
+    public static InstanceStream createImbalancedStaggerTwoAbruptDrifts(double imbalance, int pos1, int pos2, int seed) throws IOException {
         InstanceStream s1 = createImbalancedStaggerNoDriftStream(imbalance, 3, seed); // function 3
-        InstanceStream s2 = createImbalancedStaggerDriftStream(imbalance, pos2, 0, 90.0, false, seed+1);
+        InstanceStream s2 = createImbalancedStaggerDriftStream(imbalance, pos2, 0, 90.0, false, seed + 1);
         
-        return createAbruptDriftStream(s1, s2, pos1, 0, 90.0, false, seed+2); // join streams
+        return createAbruptDriftStream(s1, s2, pos1, 0, 90.0, false, seed + 2); // join streams
     }
-    
+
     public static InstanceStream createAbruptDriftStream(InstanceStream s1, InstanceStream s2, int position, int width, double alpha, boolean useWidth, int seed) {
         ConceptDriftStream driftStream = new ConceptDriftStream();
-        
+
         driftStream.streamOption.setCurrentObject(s1); // combines two streams        
         driftStream.driftstreamOption.setCurrentObject(s2); // set drift stream
         driftStream.positionOption.setValue(position);
 
         driftStream.randomSeedOption.setValue(seed); // seed for combining streams
-        
+
         if (useWidth) {
             driftStream.widthOption.setValue(width);
         } else {
-            driftStream.alphaOption.setValue(alpha); 
+            driftStream.alphaOption.setValue(alpha);
         }
-        
+
         driftStream.prepareForUse();
         return driftStream;
     }
-        
 
     public static void checkImbalance(InstanceStream stream, int streamSize, int interval) throws IOException {
         //((OptionHandler) stream).prepareForUse(); // prepare stream        
@@ -136,15 +146,16 @@ public class StreamGen {
                 System.out.println("class " + inst.classValue());
             }
             /*
-            double ratio = (double) class1 / (double) class0;
-            if (interval != 0 && (totalSamples % interval == 0)) {
-                System.out.println("class0 " + class0 + " , class1 " + class1 + ", ratio " + ratio);
-                writer.write(class1 + "\n");
-                class0 = 0;
-                class1 = 0;
-            }
-            */
+             double ratio = (double) class1 / (double) class0;
+             if (interval != 0 && (totalSamples % interval == 0)) {
+             System.out.println("class0 " + class0 + " , class1 " + class1 + ", ratio " + ratio);
+             writer.write(class1 + "\n");
+             class0 = 0;
+             class1 = 0;
+             }
+             */
         }
+        //writer.write(class1 + "\n");
         System.out.println("class0 " + class0 + " , class1 " + class1);
     }
 

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import moa.options.IntOption;
 import moa.options.FloatOption;
+import moa.streams.generators.RandomRBFGenerator;
 import weka.core.Instance;
 
 /**
@@ -14,7 +15,7 @@ import weka.core.Instance;
  */
 
 // modified to generate imbalanced RBF stream with drift
-public class RBFDrift extends RBFImbalanced {
+public class RBFDrift extends RandomRBFGenerator {
 
     @Override
     public String getPurposeString() {
@@ -23,13 +24,18 @@ public class RBFDrift extends RBFImbalanced {
 
     private static final long serialVersionUID = 1L;
 
+    public FloatOption imbalanceWeightOption = new FloatOption("weight",
+            'y', "Weight of class imbalance", 0.0);
+
     public FloatOption speedChangeOption = new FloatOption("speedChange", 's',
             "Speed of change of centroids in the model.", 0, 0, Float.MAX_VALUE);
 
     public IntOption numDriftCentroidsOption = new IntOption("numDriftCentroids", 'k',
             "The number of centroids with drift.", 50, 0, Integer.MAX_VALUE);
 
+    protected double weight;
     protected double[][] speedCentroids;
+    protected boolean nextClassShouldBeZero = false;
 
     @Override
     public Instance nextInstance() {
@@ -51,7 +57,26 @@ public class RBFDrift extends RBFImbalanced {
                 }
             }
         }
-        return super.nextInstance();
+        Instance nextInst = null;
+        boolean accept = false;
+       
+        while (!accept) {
+            nextInst = super.nextInstance();
+            double classLabel = nextInst.classValue();
+            if ((this.nextClassShouldBeZero && (classLabel == 0.0)) || (!this.nextClassShouldBeZero && (classLabel == 1.0))) {
+                accept = true;
+                this.nextClassShouldBeZero = !this.nextClassShouldBeZero;
+
+                if (classLabel != 1.0 || this.instanceRandom.nextDouble() < (this.weight / (1 - this.weight))) {
+                    accept = true;
+                } else {
+                    accept = false; // keep searching                           
+                }
+
+            }
+        }
+
+        return nextInst;
     }
 
     @Override
@@ -82,4 +107,12 @@ public class RBFDrift extends RBFImbalanced {
     public void getDescription(StringBuilder sb, int indent) {
         // TODO Auto-generated method stub
     }
+
+    @Override
+    public void restart() {
+        super.restart();;
+        this.instanceRandom = new Random(this.instanceRandomSeedOption.getValue());
+        this.weight = this.imbalanceWeightOption.getValue();
+    }
+
 }
