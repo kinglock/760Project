@@ -25,7 +25,8 @@ public class TestSuite {
 	private static final String SMOTE_PARAS = "-C 0 -K 5 -P 90.0 -S 1";
 	private static final double DESIRED_CLASS_RATIO = 1;
 	private static final boolean PERFORM_SMOTE = true;
-	private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01,0.1};
+//	private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01, 0.1, 0.5};
+	private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01};
 	private static final int POSITION = 4000; // position of abrupt drift 
 	private static final int WIDTH = 5000; // width of abrupt drift
 
