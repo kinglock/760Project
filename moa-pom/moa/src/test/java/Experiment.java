@@ -18,7 +18,7 @@ import weka.filters.supervised.instance.SMOTE;
 
 public class Experiment {
 
-	private static final int CLASS_INDEX = 1;
+	private static final int CLASS_INDEX = 1; // index of minority class
 
 	private double desiredClassRatio;
 
@@ -35,16 +35,25 @@ public class Experiment {
 	private boolean performSmote = true;
 	
 	private static String currentArffAbsolutePath;
-
+	
+	private String filename;
 	private InstanceStream stream;
 	private InstanceStream testStream;
 	private BufferedWriter bw;
+	
+	private double startMemory;
+	private long startTime; // initial time
+	private long elapsedTime; // how much time has passed till most recent stop time
+	private long lastStartTime; // current runtime values ignores the time used in testing
 
 	public Experiment() {
 	}
 
 	public void run(int numInstances, boolean isTesting, String csvFileName) throws Exception {
+		filename = csvFileName;
 		bw = new BufferedWriter(new FileWriter(csvFileName + ".csv"));
+		bw.write("sampleStartIndex\tmemory\truntime\taccuracy\tprecision\trecall\tfScore\n"); // write header to file
+		
 //		stream = new ArffFileStream(currentArffAbsolutePath, -1);
 		((OptionHandler) this.stream).prepareForUse();
 		((OptionHandler) this.testStream).prepareForUse();
@@ -54,38 +63,48 @@ public class Experiment {
 
 		int numberSamples = 0;
 		boolean preciseCPUTiming = TimingUtils.enablePreciseTiming();
-		long evaluateStartTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
+		startTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // initial start time
+		elapsedTime = (long) 0.0; // no time passed
+		lastStartTime = startTime;
 
 		/*
 		 * Generate a fixed size sample
 		 */
 		int curentSize = 0;
+		int startBucketIndex = 0; // index of start of bucket on pre-SMOTE stream		
 		Instances sample = new Instances(this.stream.getHeader(), sampleSize);
-
+		
 		while (this.stream.hasMoreInstances() && numberSamples < numInstances) {
 			if (curentSize < sampleSize) {
-
 				Instance trainInst = this.stream.nextInstance();
-
 				numberSamples++;
 				sample.add(trainInst);
 				curentSize++;
 			} else {
 				Instances newDataset = applySMOTE(sample);
+				long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before testing
+				elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when testing
+				testPerformance(sample, sampleSize, startBucketIndex); // test before training
+				currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time after testing 
+				lastStartTime = currentTime; // continue timer after adding
 				training(newDataset);
-				testPerformance(sample, numberSamples);
+				startBucketIndex = numberSamples;
 				curentSize = 0;
 				sample.clear();
 			}
-
 		}
+		
 		/*
 		 * Last sample if it still has some instances in it
 		 */
 		if (!sample.isEmpty()) {
 			Instances newDataset = applySMOTE(sample);
-			training(newDataset);
-			testPerformance(sample, numberSamples);
+			long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before testing
+			elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when testing
+			testPerformance(sample, sampleSize, startBucketIndex); // test before training
+			currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time after testing 
+			lastStartTime = currentTime; // continue timer after adding
+			training(newDataset);			
 			curentSize = 0;
 			sample.clear();
 
@@ -94,6 +113,8 @@ public class Experiment {
 		/*
 		 * Using trained model for testing the entire stream
 		 */
+		// is this necessary because we art already testing at set intervals?
+		/*
 		int count = 0;
 		int count_class_zero = 0;
 		int tP = 0, tN = 0, fP = 0, fN = 0;
@@ -133,42 +154,41 @@ public class Experiment {
 		double precision = calculatePrecision(tP, fP);
 		double f1 = calculateF1(precision, recall);
 		
-		double time = TimingUtils.nanoTimeToSeconds(TimingUtils.getNanoCPUTimeOfCurrentThread() - evaluateStartTime);
+		double time = TimingUtils.nanoTimeToSeconds(TimingUtils.getNanoCPUTimeOfCurrentThread() - startTime);
 		System.out.println(csvFileName + ": "+ + count + " instances processed with " + accuracy + "% accuracy in " + time
 				+ " seconds.");
 		System.out.println(count_class_zero + " instances with class value of 0!");
-		
-//		bw.write(count + "\t" + accuracy + "\t" + precision + "\t" + recall + "\t" + f1 + "\n");
-		bw.close();
+		*/
+
+		long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); 
+		elapsedTime = elapsedTime + currentTime - lastStartTime;
+		double totalTime = TimingUtils.nanoTimeToSeconds(elapsedTime); // total time
+		System.out.println(csvFileName + " total time: " + totalTime);
+		bw.close(); // close output file
 	}
 
-	private double calculatePrecision(int tP, int fP) {
-		// TODO Auto-generated method stub
+	private double calculatePrecision(int tP, int fP) {		
 		return (double) tP / (double) (tP + fP);
 	}
 
-	private double calculateRecall(int tP, int fN) {
-		// TODO Auto-generated method stub
+	private double calculateRecall(int tP, int fN) {		
 		return (double) tP / (double) (tP + fN);
 	}
 
-	private double calculateF1(double precision, double recall) {
-		// TODO Auto-generated method stub
+	private double calculateF1(double precision, double recall) {		
 		return (double) (2 * precision * recall) / (double) (precision + recall);
 	}
 
-	private double calculateAccuracy(int numCorrect, int totalNum) {
-		// TODO Auto-generated method stub
-		return 100.0 * (double) (numCorrect) / (double) (totalNum);
-		
+	private double calculateAccuracy(int numCorrect, int totalNum) {		
+		return 100.0 * (double) (numCorrect) / (double) (totalNum);		
 	}
 
-	private void testPerformance(Instances sample, int numberSamples) throws IOException {
+	private void testPerformance(Instances sample, int numberSamples, int startIndex) throws IOException {
 		numberSamplesCorrect = 0;
 		int tP = 0, tN = 0, fP = 0, fN = 0;
-		int index = 0;
+		int index = startIndex;
 		this.testStream.restart();
-		while (index < numberSamples && testStream.hasMoreInstances()) {
+		while ( (index < (startIndex + numberSamples)) && testStream.hasMoreInstances() ) {
 			index++;
 			Instance instance = testStream.nextInstance();
 			
@@ -191,8 +211,11 @@ public class Experiment {
 		double recall = calculateRecall(tP, fN);
 		double precision = calculatePrecision(tP, fP);
 		double f1 = calculateF1(precision, recall);
-		System.err.println(numberSamples + " Current accuracy is: " + accuracy + "% on test stream");
-		bw.write(numberSamples + "\t" + accuracy + "\t" + precision + "\t" + recall + "\t" + f1 + "\n");
+		double memory = 0.0; // change this
+		// time used in training and SMOTE (excludes testing and stream generation time)
+		double runtime = TimingUtils.nanoTimeToSeconds(elapsedTime);
+		System.err.println(filename + " " + startIndex + " tP " + tP + ", tN " + tN + ", fP " + fP + ", fN " + fN);
+		bw.write(startIndex + "\t" + memory + "\t" + runtime + "\t" + accuracy + "\t" + precision + "\t" + recall + "\t" + f1 + "\n");
 
 
 	}
@@ -305,8 +328,9 @@ public class Experiment {
 		 * ratio   1:1 for 20:40, 100%
 		 * ratio 0.9:1 for 20:40, 80%
 		 */
+		//System.out.println("Stream: " + filename);
 		AttributeStats attributeStats = sample.attributeStats(sample.classIndex());
-		System.out.println(attributeStats.toString());
+		//System.out.println(attributeStats.toString());
 		double ratio = (double)attributeStats.nominalCounts[0]/attributeStats.nominalCounts[1];
 		double increasedPercentage = 0;
 		if (ratio/desiredClassRatio > 1)
@@ -314,12 +338,15 @@ public class Experiment {
 		else
 			increasedPercentage =(double) (desiredClassRatio/ratio - 1);
 			
+		if (increasedPercentage*100 < 5)
+			return sample;
+			
 		smote.setPercentage(increasedPercentage*100);
-		System.out.println("SMOTE minority class increased percentage:"+increasedPercentage*100);
+		//System.out.println("SMOTE minority class increased percentage:" + increasedPercentage * 100);
 		smote.setInputFormat(sample);
 		Instances newDataset = Filter.useFilter(sample, smote);
 		
-		System.out.println(newDataset.attributeStats(sample.classIndex()));
+		//System.out.println(newDataset.attributeStats(sample.classIndex()));
 
 		return newDataset;
 	}

@@ -18,7 +18,7 @@ public class StaggerImbalanced extends STAGGERGenerator {
 
     public IntOption desiredClassOption = new IntOption(
             "desiredClassIndex", 'z',
-            "Index of the class of interest", 1);
+            "Index of the class of interest (the minority class)", 1);
 
     protected boolean balance = true;
 
