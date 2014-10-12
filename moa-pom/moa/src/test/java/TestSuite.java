@@ -75,7 +75,7 @@ public class TestSuite {
                 exp.setTestStream(stream);
                 for (Entry<String, DriftDetectionMethodClassifier> entry : map.entrySet()) {
                     String learnerName = entry.getKey();
-                    String csvFileName = currentFileName + "_" + learnerName;
+                    String csvFileName = currentFileName + "_SMOTE_" + PERFORM_SMOTE + "_" + learnerName; // added smote boolean to filename
                     // need to create new learner each time as a work around for setting different contexts (setModelContext)
                     DriftDetectionMethodClassifier learner = new DriftDetectionMethodClassifier();
                     if (learnerName.equals("HoeffdingTree_ADWINChangeDetector")) {
