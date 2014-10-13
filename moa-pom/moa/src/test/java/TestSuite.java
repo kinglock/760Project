@@ -20,7 +20,7 @@ import weka.filters.supervised.instance.SMOTE;
 
 public class TestSuite {
 
-    private static final String PHT_PARAS = "-n 15 -d 0.015";
+    private static final String PHT_PARAS = "-n 15";
     private static final int NUM_OF_SEEDS = 30;
     private static final int MAX_NUM_INSTANCES_USED_IN_ARFF = 1000000;
     private static final int SMOTE_SAMPLE_SIZE = 2000;
