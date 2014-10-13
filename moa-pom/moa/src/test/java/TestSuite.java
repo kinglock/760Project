@@ -20,7 +20,7 @@ import weka.filters.supervised.instance.SMOTE;
 
 public class TestSuite {
 
-    private static final String PHT_PARAS = "-n 15";
+//    private static final String PHT_PARAS = "-n 15";
     private static final int NUM_OF_SEEDS = 30;
     private static final int MAX_NUM_INSTANCES_USED_IN_ARFF = 1000000;
     private static final int SMOTE_SAMPLE_SIZE = 2000;
@@ -140,7 +140,7 @@ public class TestSuite {
         learner.baseLearnerOption = new ClassOption("baseLearner", 'l', "Classifier to train.",
                 Classifier.class, "trees.HoeffdingTree"); // modified: now using HT rather than Adaptive HT          
         learner.driftDetectionMethodOption = new ClassOption("driftDetectionMethod", 'd',
-                "Drift detection method to use.", ChangeDetector.class, "PageHinkleyDM " + PHT_PARAS); // using PHT options
+                "Drift detection method to use.", ChangeDetector.class, "PageHinkleyDM"); // using PHT options
         return learner;
     }
 }
