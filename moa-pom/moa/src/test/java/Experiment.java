@@ -2,6 +2,7 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Random;
 
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.Classifier;
@@ -17,6 +18,7 @@ import weka.filters.supervised.instance.SMOTE;
 
 public class Experiment {
 
+	private static Random random = new Random();
     private static final int CLASS_INDEX = 1; // index of minority class
     private double desiredClassRatio;
     private static Instances data;
@@ -46,7 +48,7 @@ public class Experiment {
 
     public void run(int numInstances, boolean isTesting, String csvFileName) throws Exception {
         filename = csvFileName;
-        bw = new BufferedWriter(new FileWriter(csvFileName + ".csv"));
+        bw = new BufferedWriter(new FileWriter(csvFileName + ".txt"));
         bw.write("sampleStartIndex\tmemory\truntime\taccuracy\tprecision\trecall\tfScore\n"); // write header to file
         // stream = new ArffFileStream(currentArffAbsolutePath, -1);
         
@@ -88,6 +90,7 @@ public class Experiment {
                 Instances newDataset = applySMOTE(sample);
                 long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before testing
                 elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when testing
+                newDataset = randomizeSet(newDataset); // added in randomization
                 if (isTesting) {
                     testPerformance(sample, sampleSize, startBucketIndex); // test before training
                 }
@@ -128,7 +131,19 @@ public class Experiment {
         bw.close(); // close output file
     }
 
-    private double calculatePrecision(int tP, int fP) {
+    private Instances randomizeSet(Instances newDataset) {
+		int length = newDataset.size();
+		Instances randSet = new Instances(newDataset, newDataset.size());	
+		//Instances randSet = new Instances();
+		Random random = newDataset.getRandomNumberGenerator(666);
+		for (int i=0; i<sampleSize; i++) {
+			int index = random.nextInt(length);
+			randSet.add(newDataset.get(index));
+		}
+		return randSet;
+	}
+
+	private double calculatePrecision(int tP, int fP) {
         if (tP + fP == 0.0) {
             return 0.0;
         }
@@ -220,10 +235,10 @@ public class Experiment {
             return sample;
         }
         smote.setPercentage(increasedPercentage * 100);
-        //System.out.println("SMOTE minority class increased percentage:" + increasedPercentage * 100);
+//        System.out.println("SMOTE minority class increased percentage:" + increasedPercentage * 100);
         smote.setInputFormat(sample);
         Instances newDataset = Filter.useFilter(sample, smote);
-        //System.out.println(newDataset.attributeStats(sample.classIndex()));
+//        System.out.println(newDataset.attributeStats(sample.classIndex()));
         return newDataset;
     }
 

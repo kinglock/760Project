@@ -21,13 +21,13 @@ import datastream.streams.StreamGen;
 public class TestSuite {
 
 //    private static final String PHT_PARAS = "-n 15";
-    private static final int NUM_OF_SEEDS = 30;
+    private static final int NUM_OF_SEEDS = 1;
     private static final int MAX_NUM_INSTANCES_USED_IN_ARFF = 1000000;
     private static final int SMOTE_SAMPLE_SIZE = 2000;
     private static final String SMOTE_PARAS = "-C 0 -K 5 -P 90.0 -S 1";
     private static final double DESIRED_CLASS_RATIO = 1;
 
-    private static final boolean PERFORM_SMOTE = true;
+    private static final boolean[] PERFORM_SMOTE = {true, false};
     private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01, 0.1, 0.5};
 
     private static final int POSITION = (int) (MAX_NUM_INSTANCES_USED_IN_ARFF*0.3); // position of abrupt drift
@@ -38,13 +38,12 @@ public class TestSuite {
     private static final double SPEED = 0.01; // speed of gradual drift
     private static final int CENTROIDS = 3; // number of centroids with drift for gruadual drift stream  
     
-    private static final boolean TIME_INSTANCES = false; // flag to include or exclude instance generation time
-    // set to true to include instance generation time
+    private static final boolean TIME_INSTANCES = false; // exclude instance generation time
 
     public static void main(String[] args) throws Exception {
+    	
         Experiment exp = new Experiment();
         exp.setSampleSize(SMOTE_SAMPLE_SIZE);
-        exp.setPerformSMOTE(PERFORM_SMOTE);
         exp.setTimeInstances(TIME_INSTANCES); // exclude instance generation time
         exp.setDesiredClassRatio(DESIRED_CLASS_RATIO);
 
@@ -56,36 +55,39 @@ public class TestSuite {
 
         
         Map<String, List<InstanceStream>> streams = initializeGenerator();
-
-        for (Entry<String, List<InstanceStream>> entryOfOneDataset : streams.entrySet()) {
-            List<InstanceStream> streamsOfOneDataset = entryOfOneDataset.getValue();
-            for (int seed = 1; seed <= NUM_OF_SEEDS; seed++) {
-                String currentFileName = entryOfOneDataset.getKey() + "_SEED_" + (seed);
-                InstanceStream stream = streamsOfOneDataset.get(seed - 1);
-                System.out.println("current loop seed is " + seed);
-                try {
-                    ConceptDriftStream stream1 = (ConceptDriftStream) stream;
-                    System.out.println("current stream seed is " + stream1.randomSeedOption.getValue());
-                } catch (ClassCastException ex1) {
+        for(boolean doSmote: PERFORM_SMOTE) {
+            exp.setPerformSMOTE(doSmote);
+            for (Entry<String, List<InstanceStream>> entryOfOneDataset : streams.entrySet()) {
+                List<InstanceStream> streamsOfOneDataset = entryOfOneDataset.getValue();
+                for (int seed = 1; seed <= NUM_OF_SEEDS; seed++) {
+                    String currentFileName = entryOfOneDataset.getKey() + "_SEED_" + (seed);
+                    InstanceStream stream = streamsOfOneDataset.get(seed - 1);
+                    System.out.println("current loop seed is " + seed);
                     try {
-                        StaggerImbalanced stream1 = (StaggerImbalanced) stream;
-                        System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
-                    } catch (ClassCastException ex2) {
-                        RBFDrift stream1 = (RBFDrift) stream; // added third stream type
-                        System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
+                        ConceptDriftStream stream1 = (ConceptDriftStream) stream;
+                        System.out.println("current stream seed is " + stream1.randomSeedOption.getValue());
+                    } catch (ClassCastException ex1) {
+                        try {
+                            StaggerImbalanced stream1 = (StaggerImbalanced) stream;
+                            System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
+                        } catch (ClassCastException ex2) {
+                            RBFDrift stream1 = (RBFDrift) stream; // added third stream type
+                            System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
+                        }
+                    }
+                    exp.setStream(stream);
+                    exp.setTestStream(stream);
+                    Map<String, AbstractClassifier> map = initializeDriftLearners();
+                    for (Entry<String, AbstractClassifier> entry : map.entrySet()) {
+                        String learnerName = entry.getKey();
+                        String csvFileName = currentFileName + "_SMOTE_" + PERFORM_SMOTE + "_" + learnerName; // added smote boolean to filename
+    					exp.setDriftLearner(entry.getValue());
+    					exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
                     }
                 }
-                exp.setStream(stream);
-                exp.setTestStream(stream);
-                Map<String, AbstractClassifier> map = initializeDriftLearners();
-                for (Entry<String, AbstractClassifier> entry : map.entrySet()) {
-                    String learnerName = entry.getKey();
-                    String csvFileName = currentFileName + "_SMOTE_" + PERFORM_SMOTE + "_" + learnerName; // added smote boolean to filename
-					exp.setDriftLearner(entry.getValue());
-					exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
-                }
             }
-        }
+    	}
+
     }
 
     private static Map<String, List<InstanceStream>> initializeGenerator() {
