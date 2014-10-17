@@ -1,22 +1,22 @@
 
-import datastream.streams.RBFDrift;
-import datastream.streams.StaggerImbalanced;
-import datastream.streams.StreamGen;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import moa.classifiers.AbstractClassifier;
 import moa.classifiers.Classifier;
 import moa.classifiers.core.driftdetection.ChangeDetector;
 import moa.classifiers.drift.DriftDetectionMethodClassifier;
+import moa.classifiers.trees.HoeffdingTree;
 import moa.options.ClassOption;
-import moa.options.IntOption;
 import moa.streams.ConceptDriftStream;
 import moa.streams.InstanceStream;
-import moa.streams.generators.RandomRBFGenerator;
-import moa.streams.generators.SEAGenerator;
 import weka.filters.supervised.instance.SMOTE;
+import datastream.streams.RBFDrift;
+import datastream.streams.StaggerImbalanced;
+import datastream.streams.StreamGen;
 
 public class TestSuite {
 
@@ -28,29 +28,33 @@ public class TestSuite {
     private static final double DESIRED_CLASS_RATIO = 1;
 
     private static final boolean PERFORM_SMOTE = true;
-    // private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01, 0.1, 0.5};
-    private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01};
+    private static final double[] IMBALANCE_RATIO_IN_STREAM = {0.01, 0.1, 0.5};
 
-    private static final int POSITION = 300000; // position of abrupt drift
-    private static final int WIDTH = 50000; // width of abrupt drift    
+    private static final int POSITION = (int) (MAX_NUM_INSTANCES_USED_IN_ARFF*0.3); // position of abrupt drift
+    private static final int WIDTH = (int) (MAX_NUM_INSTANCES_USED_IN_ARFF*0.05); // width of abrupt drift    
     private static final int ALPHA = 90; // angle of abrupt drift (use this for more abrupt drifts) 
     private static final boolean USE_WIDTH = false; // use either width or angle 
 
     private static final double SPEED = 0.01; // speed of gradual drift
     private static final int CENTROIDS = 3; // number of centroids with drift for gruadual drift stream  
+    
+    private static final boolean TIME_INSTANCES = false; // flag to include or exclude instance generation time
+    // set to true to include instance generation time
 
     public static void main(String[] args) throws Exception {
         Experiment exp = new Experiment();
         exp.setSampleSize(SMOTE_SAMPLE_SIZE);
         exp.setPerformSMOTE(PERFORM_SMOTE);
-
-        SMOTE smote = new SMOTE();
-        String[] options = weka.core.Utils.splitOptions(SMOTE_PARAS);
-        smote.setOptions(options);
+        exp.setTimeInstances(TIME_INSTANCES); // exclude instance generation time
         exp.setDesiredClassRatio(DESIRED_CLASS_RATIO);
-        Experiment.setSmote(smote);
 
-        Map<String, DriftDetectionMethodClassifier> map = initializeDriftLearners();
+        String[] options = weka.core.Utils.splitOptions(SMOTE_PARAS);
+		SMOTE smote = new SMOTE();
+		smote.setOptions(options);
+		Experiment.setSmote(smote);
+
+
+        
         Map<String, List<InstanceStream>> streams = initializeGenerator();
 
         for (Entry<String, List<InstanceStream>> entryOfOneDataset : streams.entrySet()) {
@@ -73,19 +77,12 @@ public class TestSuite {
                 }
                 exp.setStream(stream);
                 exp.setTestStream(stream);
-                for (Entry<String, DriftDetectionMethodClassifier> entry : map.entrySet()) {
+                Map<String, AbstractClassifier> map = initializeDriftLearners();
+                for (Entry<String, AbstractClassifier> entry : map.entrySet()) {
                     String learnerName = entry.getKey();
                     String csvFileName = currentFileName + "_SMOTE_" + PERFORM_SMOTE + "_" + learnerName; // added smote boolean to filename
-                    // need to create new learner each time as a work around for setting different contexts (setModelContext)
-                    DriftDetectionMethodClassifier learner = new DriftDetectionMethodClassifier();
-                    if (learnerName.equals("HoeffdingTree_ADWINChangeDetector")) {
-                        learner = createADWIN();
-                    } else if (learnerName.equals("HoeffdingTree_PageHinkleyDM")) {
-                        learner = createPHT();
-                    }
-                    exp.setDriftLearner(learner);
-                    exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
-
+					exp.setDriftLearner(entry.getValue());
+					exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
                 }
             }
         }
@@ -93,10 +90,10 @@ public class TestSuite {
 
     private static Map<String, List<InstanceStream>> initializeGenerator() {
         Map<String, List<InstanceStream>> map = new HashMap<String, List<InstanceStream>>();
-        List<InstanceStream> streamOfOneDatasetWithDifferentSeed1 = new LinkedList<InstanceStream>();
-        List<InstanceStream> streamOfOneDatasetWithDifferentSeed2 = new LinkedList<InstanceStream>();
-        List<InstanceStream> streamOfOneDatasetWithDifferentSeed3 = new LinkedList<InstanceStream>();
         for (double imblanceRatio : IMBALANCE_RATIO_IN_STREAM) {
+        	List<InstanceStream> streamOfOneDatasetWithDifferentSeed1 = new LinkedList<InstanceStream>();
+        	List<InstanceStream> streamOfOneDatasetWithDifferentSeed2 = new LinkedList<InstanceStream>();
+        	List<InstanceStream> streamOfOneDatasetWithDifferentSeed3 = new LinkedList<InstanceStream>();
             for (int seed = 1; seed <= NUM_OF_SEEDS; seed++) {
                 InstanceStream stream1 = StreamGen.createImbalancedStaggerDriftStream(imblanceRatio, POSITION, WIDTH, ALPHA, USE_WIDTH, seed);
                 streamOfOneDatasetWithDifferentSeed1.add(stream1);
@@ -112,16 +109,18 @@ public class TestSuite {
         return map;
     }
 
-    private static Map<String, DriftDetectionMethodClassifier> initializeDriftLearners() {
-        Map<String, DriftDetectionMethodClassifier> map = new HashMap<String, DriftDetectionMethodClassifier>();
+    private static Map<String, AbstractClassifier> initializeDriftLearners() {
+        Map<String, AbstractClassifier> map = new HashMap<String, AbstractClassifier>();
 
         DriftDetectionMethodClassifier driftDetectionMethodClassifier1 = createADWIN(); // refactored
         DriftDetectionMethodClassifier driftDetectionMethodClassifier2 = createPHT();
+        AbstractClassifier driftDetectionMethodClassifier3 = new HoeffdingTree();
 
         driftDetectionMethodClassifier2.driftDetectionMethodOption.getValueAsCLIString();
 
         map.put("HoeffdingTree_ADWINChangeDetector", driftDetectionMethodClassifier1);
         map.put("HoeffdingTree_PageHinkleyDM", driftDetectionMethodClassifier2);
+        map.put("HoeffdingTree_NoDDM", driftDetectionMethodClassifier3);
         return map;
     }
 

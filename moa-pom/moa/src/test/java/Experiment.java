@@ -2,13 +2,12 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import moa.classifiers.AbstractClassifier;
 import moa.classifiers.Classifier;
-import moa.classifiers.drift.DriftDetectionMethodClassifier;
 import moa.core.TimingUtils;
 import moa.options.OptionHandler;
-import moa.streams.ConceptDriftStream;
 import moa.streams.InstanceStream;
-import moa.tasks.WriteStreamToARFFFile;
 import weka.core.AttributeStats;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -38,6 +37,10 @@ public class Experiment {
     private long elapsedTime; // how much time has passed till most recent stop time
     private long lastStartTime; // current runtime values ignores the time used in testing
 
+    private boolean timeInstances = true; // parameter for adjusting timer 
+    // set to true to include time used in generating next instance
+    // set to false to exclude time used in instance generation
+    
     public Experiment() {
     }
 
@@ -68,7 +71,16 @@ public class Experiment {
         
         while (this.stream.hasMoreInstances() && numberSamples < numInstances) {
             if (curentSize < sampleSize) {
-                Instance trainInst = this.stream.nextInstance();
+                Instance trainInst;
+                if (timeInstances) {
+                    trainInst = this.stream.nextInstance(); // time this step 
+                } else {
+                    long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before getting next instance
+                    elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when getting next instance                
+                    trainInst = this.stream.nextInstance(); // do not time this step                
+                    currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time after instance is returned 
+                    lastStartTime = currentTime; // continue timer
+                }                
                 numberSamples++;
                 sample.add(trainInst);
                 curentSize++;
@@ -236,7 +248,7 @@ public class Experiment {
         }
     }
 
-    public void setDriftLearner(DriftDetectionMethodClassifier driftDetectionMethodClassifier) {
+    public void setDriftLearner(AbstractClassifier driftDetectionMethodClassifier) {
         learner = driftDetectionMethodClassifier;
     }
 
@@ -262,5 +274,9 @@ public class Experiment {
 
     public void setTestStream(InstanceStream testStream) {
         this.testStream = testStream;
+    }
+    
+    public void setTimeInstances(boolean bool) {
+        timeInstances = bool;
     }
 }
