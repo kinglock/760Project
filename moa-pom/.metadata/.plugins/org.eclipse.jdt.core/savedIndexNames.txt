@@ -1,0 +1,24 @@
+INDEX VERSION 1.127+E:\COMPSCI 760\Group project\git1\760Project\moa-pom\.metadata\.plugins\org.eclipse.jdt.core
+1115467115.index
+4155206848.index
+1995173708.index
+4041092966.index
+639565731.index
+1435374040.index
+3133528496.index
+4108727661.index
+305854171.index
+943722963.index
+163172794.index
+1697886153.index
+3065916431.index
+1979329125.index
+1588593938.index
+1299022128.index
+30765161.index
+965761527.index
+1901594068.index
+3974580528.index
+12021673.index
+2927443717.index
+1498219845.index

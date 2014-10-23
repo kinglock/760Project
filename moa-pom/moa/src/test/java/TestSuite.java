@@ -21,7 +21,7 @@ import datastream.streams.StreamGen;
 public class TestSuite {
 
 //    private static final String PHT_PARAS = "-n 15";
-    private static final int NUM_OF_SEEDS = 1;
+    private static final int NUM_OF_SEEDS = 30;
     private static final int MAX_NUM_INSTANCES_USED_IN_ARFF = 1000000;
     private static final int SMOTE_SAMPLE_SIZE = 2000;
     private static final String SMOTE_PARAS = "-C 0 -K 5 -P 90.0 -S 1";
@@ -71,8 +71,13 @@ public class TestSuite {
                             StaggerImbalanced stream1 = (StaggerImbalanced) stream;
                             System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
                         } catch (ClassCastException ex2) {
-                            RBFDrift stream1 = (RBFDrift) stream; // added third stream type
-                            System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
+                            try { 
+                            	RBFDrift stream1 = (RBFDrift) stream; // added third stream type
+                            	System.out.println("current stream seed is " + stream1.instanceRandomSeedOption.getValue());
+                            } catch (ClassCastException ex3) {
+                            	
+                            }
+                            
                         }
                     }
                     exp.setStream(stream);
@@ -80,7 +85,7 @@ public class TestSuite {
                     Map<String, AbstractClassifier> map = initializeDriftLearners();
                     for (Entry<String, AbstractClassifier> entry : map.entrySet()) {
                         String learnerName = entry.getKey();
-                        String csvFileName = currentFileName + "_SMOTE_" + PERFORM_SMOTE + "_" + learnerName; // added smote boolean to filename
+                        String csvFileName = currentFileName + "_SMOTE_" + doSmote + "_" + learnerName; // added smote boolean to filename
     					exp.setDriftLearner(entry.getValue());
     					exp.run(MAX_NUM_INSTANCES_USED_IN_ARFF, true, csvFileName);
                     }
@@ -92,6 +97,7 @@ public class TestSuite {
 
     private static Map<String, List<InstanceStream>> initializeGenerator() {
         Map<String, List<InstanceStream>> map = new HashMap<String, List<InstanceStream>>();
+        
         for (double imblanceRatio : IMBALANCE_RATIO_IN_STREAM) {
         	List<InstanceStream> streamOfOneDatasetWithDifferentSeed1 = new LinkedList<InstanceStream>();
         	List<InstanceStream> streamOfOneDatasetWithDifferentSeed2 = new LinkedList<InstanceStream>();
@@ -104,10 +110,16 @@ public class TestSuite {
                 InstanceStream stream3 = StreamGen.createRBFDriftStream(imblanceRatio, CENTROIDS, SPEED, seed);
                 streamOfOneDatasetWithDifferentSeed3.add(stream3);
             }
+            
             map.put("StaggerAbruptDrift_Imbalanced_" + imblanceRatio, streamOfOneDatasetWithDifferentSeed1); // abrupt drift
             map.put("StaggerNoDrift_Imbalanced_" + imblanceRatio, streamOfOneDatasetWithDifferentSeed2); // no drift
             map.put("RBFGradualDrift_Imbalanced_" + imblanceRatio, streamOfOneDatasetWithDifferentSeed3); // gradual drift
+        	
         }
+        
+/*        List<InstanceStream> elecList = new LinkedList<InstanceStream>();
+        elecList.add(StreamGen.createElectricity());
+        map.put("Electricity", elecList);*/
         return map;
     }
 

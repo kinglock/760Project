@@ -1,0 +1,50 @@
+package datastream.streams;
+
+import weka.core.Instance;
+import moa.streams.ArffFileStream;
+
+import java.util.Random;
+
+public class ArffImbalanced extends ArffFileStream {
+	
+	private Random random;
+	private double ratio;
+	
+	public ArffImbalanced(String arffFileName, int classIndex, double ratio) {
+		this.arffFileOption.setValue(arffFileName);
+        this.classIndexOption.setValue(classIndex);        
+		random = new Random();
+		this.ratio = ratio;
+		restart();
+	}
+	
+    @Override
+    public Instance nextInstance() {
+        Instance prevInstance = this.lastInstanceRead;
+        this.hitEndOfFile = !readNextInstanceFromFile();
+        boolean found = false;
+                
+        while (!found) {
+        	prevInstance = this.lastInstanceRead;
+        	double r = random.nextDouble();        
+	        if (r < ratio) {
+	        	if (prevInstance.classValue() == 1.0) {
+	        		found = true;
+	        	}        	
+	        } else {
+				if (prevInstance.classValue() == 0.0) {
+				    found = true;
+				} 
+	        }
+	        if (!found) {
+	        	found = !readNextInstanceFromFile();
+	        }
+        }
+        if (prevInstance == null) {
+        	System.out.println("hello");        	
+        }
+        return prevInstance;
+    }
+    
+
+}

@@ -4,6 +4,8 @@ package datastream.streams;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import moa.streams.ArffFileStream;
 import moa.streams.ConceptDriftStream;
 import moa.streams.InstanceStream;
 import moa.tasks.WriteStreamToARFFFile;
@@ -28,7 +30,10 @@ public class StreamGen {
         writer = new BufferedWriter(new FileWriter("RBF_" + imbalance + "_class1.txt"));
         writer = new BufferedWriter(new FileWriter("RBF_Drift_" + imbalance + "_class1.txt"));
         */
-        InstanceStream s;
+        InstanceStream s = createElectricity();
+        checkImbalance(s, 40000 , 0); 
+        //writeStream(s, "elec_0.1");
+        
         for (int i = 0; i < 35; i++) {
             /*
             s = createImbalancedStaggerDriftStream(imbalance, POSITION, WIDTH, ALPHA, false, i);            
@@ -40,6 +45,13 @@ public class StreamGen {
         //writer.close();
     }
 
+    public static ArffImbalanced createElectricity() {
+    	//ArffImbalanced stream = new ArffImbalanced("electricity.arff", -1, 0.1506125); // 1:9 
+    	ArffImbalanced stream = new ArffImbalanced("electricity.arff", -1, 0.074); // 1:95
+    	stream.prepareForUse();
+    	return stream;    	
+    }
+    
     public static RBFImbalanced createImbalancedRBFStream(double imbalance, int seed) {
         RBFImbalanced rbf = new RBFImbalanced();
         rbf.numClassesOption.setValue(2);
@@ -77,7 +89,8 @@ public class StreamGen {
     }
 
     /*
-     * The imbalance percentage of this output stream is higher than expected (not safe to use!)    
+     * Has been modified to previous version but is slow when generating instances 
+     * (may be better to first generate many instances then do under sampling on desired minority class)
      */
     public static InstanceStream createHyperplaneStream(double imbalance, double magnitude, int seed) {
         HyperplaneImbalanced hyper = new HyperplaneImbalanced();

@@ -50,7 +50,7 @@ public class Experiment {
         filename = csvFileName;
         bw = new BufferedWriter(new FileWriter(csvFileName + ".txt"));
         bw.write("sampleStartIndex\tmemory\truntime\taccuracy\tprecision\trecall\tfScore\n"); // write header to file
-        // stream = new ArffFileStream(currentArffAbsolutePath, -1);
+        //stream = new ArffFileStream(currentArffAbsolutePath, -1);
         
         ((OptionHandler) this.stream).prepareForUse();
         ((OptionHandler) this.testStream).prepareForUse();
@@ -88,9 +88,10 @@ public class Experiment {
                 curentSize++;
             } else {
                 Instances newDataset = applySMOTE(sample);
-                long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before testing
-                elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when testing
                 newDataset = randomizeSet(newDataset); // added in randomization
+                
+                long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before testing
+                elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when testing                
                 if (isTesting) {
                     testPerformance(sample, sampleSize, startBucketIndex); // test before training
                 }
@@ -108,6 +109,7 @@ public class Experiment {
          */
         if (!sample.isEmpty()) {
             Instances newDataset = applySMOTE(sample);
+            newDataset = randomizeSet(newDataset); // added in randomization
             long currentTime = TimingUtils.getNanoCPUTimeOfCurrentThread(); // time before testing
             elapsedTime = elapsedTime + currentTime - lastStartTime; // stop timer when testing
             if (isTesting) {
@@ -231,9 +233,11 @@ public class Experiment {
         } else {
             increasedPercentage = (double) (desiredClassRatio / ratio - 1);
         }
+        /*
         if (increasedPercentage * 100 < 5) {
             return sample;
         }
+        */
         smote.setPercentage(increasedPercentage * 100);
 //        System.out.println("SMOTE minority class increased percentage:" + increasedPercentage * 100);
         smote.setInputFormat(sample);

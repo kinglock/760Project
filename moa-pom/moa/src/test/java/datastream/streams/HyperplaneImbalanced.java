@@ -55,21 +55,29 @@ public class HyperplaneImbalanced extends HyperplaneGenerator {
             }
 
             if (!this.balanceClassesOption.isSet()) {
-                double rand = this.instanceRandom.nextDouble();
-                if (rand < this.imbalanceWeight) {
-                    if (classLabel == 1) {
-                        desiredClassFound = true;
-                    }
-                } else {
-                    if (classLabel == 0) {
-                        desiredClassFound = true;
-                    }
-                }
+                // imbalance ratio not important 
+            	desiredClassFound = true;
             } else {
                 // balance the classes      
                 if ((this.nextClassShouldBeZero && (classLabel == 0)) || (!this.nextClassShouldBeZero && (classLabel == 1))) {
                     desiredClassFound = true;
                     this.nextClassShouldBeZero = !this.nextClassShouldBeZero;
+                    
+                    // then create imbalance
+                    double rand = this.instanceRandom.nextDouble();
+                    if (rand < this.imbalanceWeight) {
+                        if (classLabel == 1) {
+                            desiredClassFound = true;
+                        } else {
+                        	desiredClassFound = false;                        	
+                        }
+                    } else {
+                        if (classLabel == 0) {
+                            desiredClassFound = true;
+                        } else {
+                        	desiredClassFound = false;
+                        }
+                    }
                 }
             }
         }
