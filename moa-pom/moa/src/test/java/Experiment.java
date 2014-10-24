@@ -19,7 +19,7 @@ import weka.filters.supervised.instance.SMOTE;
 public class Experiment {
 
 	private static Random random = new Random();
-    private static final int CLASS_INDEX = 1; // index of minority class
+    private static int CLASS_INDEX = 1; // index of minority class
     private double desiredClassRatio;
     private static Instances data;
     private static SMOTE smote;
@@ -173,7 +173,14 @@ public class Experiment {
     private void testPerformance(Instances sample, int numberSamples, int startIndex) throws IOException {
         numberSamplesCorrect = 0;
         int tP = 0, tN = 0, fP = 0, fN = 0;
+        
         int index = 0;
+        
+        if (filename.split("_")[0].equals("Electricity")) {        	
+        	CLASS_INDEX = 0;
+        } else {
+        	CLASS_INDEX = 1;
+        }
 
         for (Instance instance : sample) {
             index++;
@@ -203,7 +210,7 @@ public class Experiment {
 
         //System.err.println(startIndex + " " + filename + " mem: " + byteSize);
         //System.err.println(startIndex + " " + filename + " elapsed time: " + runtime);        
-        //System.err.println(filename + " " + startIndex + " tP " + tP + ", tN " + tN + ", fP " + fP + ", fN " + fN);
+        System.err.println(filename + " " + startIndex + " tP " + tP + ", tN " + tN + ", fP " + fP + ", fN " + fN);
         bw.write(startIndex + "\t" + byteSize + "\t" + runtime + "\t" + accuracy + "\t" + precision + "\t" + recall + "\t" + f1 + "\n");
 
     }

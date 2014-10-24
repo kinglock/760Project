@@ -30,8 +30,8 @@ public class StreamGen {
         writer = new BufferedWriter(new FileWriter("RBF_" + imbalance + "_class1.txt"));
         writer = new BufferedWriter(new FileWriter("RBF_Drift_" + imbalance + "_class1.txt"));
         */
-        InstanceStream s = createElectricity();
-        checkImbalance(s, 40000 , 0); 
+        //InstanceStream s = createElectricity(9);
+        //checkImbalance(s, 40000 , 0); 
         //writeStream(s, "elec_0.1");
         
         for (int i = 0; i < 35; i++) {
@@ -45,9 +45,13 @@ public class StreamGen {
         //writer.close();
     }
 
-    public static ArffImbalanced createElectricity() {
-    	//ArffImbalanced stream = new ArffImbalanced("electricity.arff", -1, 0.1506125); // 1:9 
-    	ArffImbalanced stream = new ArffImbalanced("electricity.arff", -1, 0.074); // 1:95
+    public static ArffImbalanced createElectricity(int ratio) {
+    	ArffImbalanced stream = null;
+    	if (ratio == 9) {
+    		stream = new ArffImbalanced("electricity.arff", -1, 0.1506125); // 1:9 
+    	} else if (ratio == 95) {
+    		stream = new ArffImbalanced("electricity.arff", -1, 0.074); // 5:95
+    	}
     	stream.prepareForUse();
     	return stream;    	
     }

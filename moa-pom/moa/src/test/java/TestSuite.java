@@ -11,6 +11,7 @@ import moa.classifiers.core.driftdetection.ChangeDetector;
 import moa.classifiers.drift.DriftDetectionMethodClassifier;
 import moa.classifiers.trees.HoeffdingTree;
 import moa.options.ClassOption;
+import moa.streams.ArffFileStream;
 import moa.streams.ConceptDriftStream;
 import moa.streams.InstanceStream;
 import weka.filters.supervised.instance.SMOTE;
@@ -21,7 +22,7 @@ import datastream.streams.StreamGen;
 public class TestSuite {
 
 //    private static final String PHT_PARAS = "-n 15";
-    private static final int NUM_OF_SEEDS = 30;
+    private static final int NUM_OF_SEEDS = 1; //30;
     private static final int MAX_NUM_INSTANCES_USED_IN_ARFF = 1000000;
     private static final int SMOTE_SAMPLE_SIZE = 2000;
     private static final String SMOTE_PARAS = "-C 0 -K 5 -P 90.0 -S 1";
@@ -39,7 +40,8 @@ public class TestSuite {
     private static final int CENTROIDS = 3; // number of centroids with drift for gruadual drift stream  
     
     private static final boolean TIME_INSTANCES = false; // exclude instance generation time
-
+    
+    
     public static void main(String[] args) throws Exception {
     	
         Experiment exp = new Experiment();
@@ -51,9 +53,7 @@ public class TestSuite {
 		SMOTE smote = new SMOTE();
 		smote.setOptions(options);
 		Experiment.setSmote(smote);
-
-
-        
+		
         Map<String, List<InstanceStream>> streams = initializeGenerator();
         for(boolean doSmote: PERFORM_SMOTE) {
             exp.setPerformSMOTE(doSmote);
@@ -97,7 +97,7 @@ public class TestSuite {
 
     private static Map<String, List<InstanceStream>> initializeGenerator() {
         Map<String, List<InstanceStream>> map = new HashMap<String, List<InstanceStream>>();
-        
+        /*
         for (double imblanceRatio : IMBALANCE_RATIO_IN_STREAM) {
         	List<InstanceStream> streamOfOneDatasetWithDifferentSeed1 = new LinkedList<InstanceStream>();
         	List<InstanceStream> streamOfOneDatasetWithDifferentSeed2 = new LinkedList<InstanceStream>();
@@ -116,10 +116,23 @@ public class TestSuite {
             map.put("RBFGradualDrift_Imbalanced_" + imblanceRatio, streamOfOneDatasetWithDifferentSeed3); // gradual drift
         	
         }
+        */
         
-/*        List<InstanceStream> elecList = new LinkedList<InstanceStream>();
-        elecList.add(StreamGen.createElectricity());
-        map.put("Electricity", elecList);*/
+        //List<InstanceStream> elecList = new LinkedList<InstanceStream>();
+        
+        //elecList.add(StreamGen.createElectricity(9)); // 1:9        
+        
+        //elecList.add(StreamGen.createElectricity(95)); // 5:95  
+        
+        /*
+        ArffFileStream str = new ArffFileStream();
+        str.arffFileOption.setValue("electricity.arff"); // almost balanced (unmodified version)
+        str.classIndexOption.setValue(-1);     
+        elecList.add(str);
+        */
+        
+        //map.put("Electricity_ratio_1", elecList);
+        
         return map;
     }
 

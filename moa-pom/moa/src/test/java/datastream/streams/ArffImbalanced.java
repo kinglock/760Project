@@ -53,7 +53,7 @@ public class ArffImbalanced extends ArffFileStream {
         	count0++;
         }
         count++;
-        System.out.println("0 " + count0 + " 1 " + count1);
+        //System.out.println("0 " + count0 + " 1 " + count1);
         return prevInstance;
     }
     
